@@ -63,7 +63,10 @@ button{width:100%;height:46px;margin-top:20px;border:0;border-radius:10px;backgr
       if(response.status===401){message('账号或密码不正确。 Invalid account or password.');button.disabled=false;return;}
       if(response.status===429){message('尝试次数过多，请稍后再试。 Too many attempts.');button.disabled=false;return;}
       if(!response.ok)throw Error('login');
-      var data=await response.json();remember(data.token);busy(true);await openDashboard(data,data.token);
+      var data=await response.json();remember(data.token);busy(true);
+      var bootstrapResponse=await fetch(API_BASE+'/api/bootstrap',{headers:{Authorization:'Bearer '+data.token},cache:'no-store',signal:AbortSignal.timeout(15000)});
+      if(!bootstrapResponse.ok)throw Error('bootstrap');
+      await openDashboard(await bootstrapResponse.json(),data.token);
     }catch(e){busy(false);button.disabled=false;message('登录服务暂时不可用，请稍后重试。 Sign-in service is unavailable.');}
   });
   resume();
