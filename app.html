@@ -1782,7 +1782,7 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
     '等待确认中':'Pending Confirmation','确认事项':'Confirmation Item','提交人':'Submitted By','待确认人':'Approver','提交日期':'Submitted',
     '需要日期':'Needed By','已等待':'Waiting','影响':'Impact','状态':'Status','尺寸并行矩阵':'Parallel Size Matrix','当前里程碑':'Current Milestone',
     '执行人 R':'Responsible R','负责人 A':'Accountable A','计划日期':'Planned Date','待确认事项':'Confirmation Item','进度':'Progress',
-    '水翼事业部':'Hydrofoil','冲浪板事业部':'Surfboard','风筝事业部':'Kite','配件事业部':'Accessories','暂无项目':'No projects',
+    '水翼事业部':'Hydrofoil','板翼事业部':'Boards & Wings','冲浪板事业部':'Surfboard','风筝事业部':'Kite','配件事业部':'Accessories','暂无项目':'No projects',
     '已完成':'Completed','进行中':'In Progress','已延误':'Delayed','阻塞':'Blocked','待确认':'Pending','暂停':'Paused','未开始':'Not Started',
     '不适用':'N/A','待排期':'To Be Scheduled','待图档':'Awaiting Drawing','待处理':'Pending Items','资料准备中':'Preparing',
     '产品型号':'Product Models','已完成 / 已出货':'Completed / Shipped','生产进行中':'In Production','等待图档':'Awaiting Drawing',
@@ -2554,13 +2554,14 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   var creatingProjectLine='hydrofoil';
   var BUSINESS_LINES=[
     {id:'hydrofoil',name:'水翼事业部',en:'Foils',icon:'◉'},
-    {id:'surfboard',name:'冲浪板事业部',en:'Boards',icon:'◒'},
-    {id:'kite',name:'风筝事业部',en:'Wings',icon:'◇'},
+    {id:'boardwing',name:'板翼事业部',en:'Boards & Wings',icon:'◒'},
     {id:'accessories',name:'配件事业部',en:'Accessories',icon:'⚙'}
   ];
-  var sidebarGroupState={hydrofoil:true,surfboard:false,kite:true,accessories:true};
+  function businessLineMatches(groupId,lineId){return groupId==='boardwing'?(lineId==='surfboard'||lineId==='kite'):groupId===lineId;}
+  var sidebarGroupState={hydrofoil:true,boardwing:true,accessories:true};
   var dashboardFilter='all',gateApproverFilter='',gateSeriesFilter='';
   var lineFilter=readDashboardPreference('foil_dashboard_line_filter')||'';
+  if(lineFilter==='surfboard'||lineFilter==='kite')lineFilter='boardwing';
   var statusFilter=readDashboardPreference('foil_dashboard_status_filter')||'';
   var WORKSPACE_STATUSES=['进行中','待确认','已延误','阻塞','未开始','待图档','待排期','已完成'];
   try{var savedGroups=JSON.parse(localStorage.getItem('foil_sidebar_groups'));if(savedGroups)Object.assign(sidebarGroupState,savedGroups);}catch(e){}
@@ -2656,11 +2657,11 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     var english=window.DASHBOARD_LANG==='en';
     var search=document.getElementById('sidebarSearch'),q=search?search.value.trim().toLowerCase():'';
     box.innerHTML=BUSINESS_LINES.map(function(line){
-      var all=seriesState.filter(function(p){return p.businessLine===line.id;});
+      var all=seriesState.filter(function(p){return businessLineMatches(line.id,p.businessLine);});
       var projects=!q?all:all.filter(function(p){return [p.name,p.owner,p.part].concat(p.variants.map(function(v){return [v.name,v.node,v.r,v.a].join(' ');})).join(' ').toLowerCase().indexOf(q)>=0;});
-      var sampleFamilies=line.id==='kite'&&typeof sampleState!=='undefined'?Array.from(new Set(sampleState.map(function(s){return s.family;}))).filter(function(f){return !q||f.toLowerCase().indexOf(q)>=0;}):[];
+      var sampleFamilies=line.id==='boardwing'&&typeof sampleState!=='undefined'?Array.from(new Set(sampleState.map(function(s){return s.family;}))).filter(function(f){return !q||f.toLowerCase().indexOf(q)>=0;}):[];
       if(q&&!projects.length&&!sampleFamilies.length)return '';
-      var open=q?true:sidebarGroupState[line.id],signal=highestSignal(all,line.id==='kite');
+      var open=q?true:sidebarGroupState[line.id],signal=highestSignal(all,line.id==='boardwing');
       var projectRows=projects.map(function(p){
         return '<div class="sidebar-project-row"><button type="button" class="sidebar-link" title="'+esc(p.name)+'" '+dashboardAction('openProject',[p.id])+'><i><span class="signal '+projectSignal(p)+'"></span></i><span>'+esc(p.name)+'</span></button>'+(canManageProjects()?'<button type="button" class="project-rename" title="重命名 '+esc(p.name)+'" aria-label="重命名 '+esc(p.name)+'" '+dashboardAction('renameProject',[p.id])+'>✎</button><button type="button" class="project-delete" title="删除 '+esc(p.name)+'" '+dashboardAction('deleteProject',[p.id])+'>×</button>':'')+'</div>';
       }).join('');
@@ -2696,7 +2697,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     if(!canManageProjects())return;
     creatingProjectLine=lineId||'hydrofoil';
     var line=BUSINESS_LINES.find(function(x){return x.id===creatingProjectLine;})||BUSINESS_LINES[0];
-    var typeMap={hydrofoil:['前翼系列','尾翼系列','竖杆系列','横杆系列','整套水翼'],surfboard:['冲浪板系列'],kite:['风筝系列'],accessories:['配件系列']};
+    var typeMap={hydrofoil:['前翼系列','尾翼系列','竖杆系列','横杆系列','整套水翼'],boardwing:['冲浪板系列','风筝系列'],accessories:['配件系列']};
     var typeOptions=(typeMap[creatingProjectLine]||['其他']).map(function(x){return option(x,x,false);}).join('');
     creatingProject=true;creatingVariant=false;pendingVariantDraft=null;activeId=null;activeVariantName=null;
     document.getElementById('drawerTitle').textContent='新增产品项目';
@@ -2753,7 +2754,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
         .join(' ').toLowerCase();
       return text.indexOf(q)>=0;
     });
-    if(lineFilter)list=list.filter(function(p){return p.businessLine===lineFilter;});
+    if(lineFilter)list=list.filter(function(p){return businessLineMatches(lineFilter,p.businessLine);});
     if(statusFilter)list=list.filter(function(p){return seriesStatus(p)===statusFilter;});
     if(PRIORITIES.includes(priorityFilter))list=list.filter(function(p){return priorityValue(p.priority)===priorityFilter;});
     if(dashboardFilter==='active')list=list.filter(function(p){return seriesStatus(p)!=='已完成';});
@@ -2799,7 +2800,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     return out;
   }
   function gateBoardHtml(){
-    var gates=allApprovals().filter(function(x){return (!lineFilter||x.line===lineFilter)&&(!PRIORITIES.includes(priorityFilter)||priorityValue(x.priority)===priorityFilter)&&x.gate.status!=='已完成'&&(dashboardFilter!=='waiting'||x.gate.status==='待确认')&&(!gateSeriesFilter||x.seriesId===gateSeriesFilter)&&(!gateApproverFilter||approverNames(x.gate.approver).indexOf(gateApproverFilter)>=0);}).sort(function(a,b){var ao=overdueDays(a.gate),bo=overdueDays(b.gate);return bo-ao||waitingDays(b.gate)-waitingDays(a.gate);});
+    var gates=allApprovals().filter(function(x){return (!lineFilter||businessLineMatches(lineFilter,x.line))&&(!PRIORITIES.includes(priorityFilter)||priorityValue(x.priority)===priorityFilter)&&x.gate.status!=='已完成'&&(dashboardFilter!=='waiting'||x.gate.status==='待确认')&&(!gateSeriesFilter||x.seriesId===gateSeriesFilter)&&(!gateApproverFilter||approverNames(x.gate.approver).indexOf(gateApproverFilter)>=0);}).sort(function(a,b){var ao=overdueDays(a.gate),bo=overdueDays(b.gate);return bo-ao||waitingDays(b.gate)-waitingDays(a.gate);});
     var english=window.DASHBOARD_LANG==='en',filterText=gateApproverFilter?(english?'Approver: '+gateApproverFilter:'待确认人：'+gateApproverFilter):gateSeriesFilter?(english?'Filtered by project':'已按项目筛选'):'';
     return '<section class="gate-board workspace-section" id="gateBoard"><div class="gate-board-head workspace-section-head"><div><h2>等待确认中</h2><p>超期按需要日期标记。</p></div><div class="gate-head-actions">'+(filterText?'<span class="active-gate-filter">'+esc(filterText)+'</span><button type="button" onclick="clearConfirmationFilter()">'+(english?'Clear filter':'清除筛选')+'</button>':'')+'<span class="gate-count">'+gates.filter(function(x){return x.gate.status==='待确认';}).length+'项待确认</span></div></div>'+
       '<div class="gate-table-wrap"><table class="gate-table"><colgroup><col class="gate-col-series"><col class="gate-col-question"><col class="gate-col-person"><col class="gate-col-person"><col class="gate-col-date"><col class="gate-col-date"><col class="gate-col-age"><col class="gate-col-impact"><col class="gate-col-status"></colgroup><thead><tr><th>产品系列 / 范围</th><th>确认事项</th><th>提交人</th><th>待确认人</th><th class="cell-center">提交日期</th><th class="cell-center">需要日期</th><th class="cell-center">已等待</th><th>影响</th><th class="cell-center table-status-cell">状态</th></tr></thead><tbody>'+
@@ -2913,10 +2914,10 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     var rank={'阻塞':0,'已延误':0,'待确认':1,'待图档':1,'待排期':1,'进行中':2,'未开始':2,'已完成':3};
     var kiteFamilies=typeof sampleState==='undefined'?[]:Array.from(new Set(sampleState.map(function(s){return s.family;})));
     var lineSections=BUSINESS_LINES.map(function(line){
-      var items=seriesState.filter(function(p){return p.businessLine===line.id&&(!PRIORITIES.includes(priorityFilter)||priorityValue(p.priority)===priorityFilter);}).map(function(p){
+      var items=seriesState.filter(function(p){return businessLineMatches(line.id,p.businessLine)&&(!PRIORITIES.includes(priorityFilter)||priorityValue(p.priority)===priorityFilter);}).map(function(p){
         return {kind:'project',id:p.id,name:p.name,status:seriesStatus(p),priority:p.priority,risk:projectAtRisk(p),progress:seriesProgress(p),affected:affectedVariantCount(p),total:p.variants.length};
       });
-      if(line.id==='kite'&&!PRIORITIES.includes(priorityFilter))kiteFamilies.forEach(function(family){var samples=sampleState.filter(function(s){return s.family===family;});items.push({kind:'sample',id:family,name:family,status:sampleFamilyStatus(family),progress:sampleFamilyProgress(family),affected:affectedSampleCount(family),total:samples.length});});
+      if(line.id==='boardwing'&&!PRIORITIES.includes(priorityFilter))kiteFamilies.forEach(function(family){var samples=sampleState.filter(function(s){return s.family===family;});items.push({kind:'sample',id:family,name:family,status:sampleFamilyStatus(family),progress:sampleFamilyProgress(family),affected:affectedSampleCount(family),total:samples.length});});
       items.sort(function(a,b){return (prioritySort?comparePriority(a,b):0)||(rank[a.status]===undefined?9:rank[a.status])-(rank[b.status]===undefined?9:rank[b.status])||a.name.localeCompare(b.name);});
       var cards=items.map(function(item){
         var tone=item.status==='阻塞'||item.status==='已延误'?'danger':item.status==='待确认'||item.status==='待图档'||item.status==='待排期'?'warning':'good';
@@ -2936,7 +2937,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   };
   function sampleOverviewGroups(){
     var groups=new Map(),input=document.getElementById('search'),q=input?input.value.trim().toLowerCase():'';
-    if(dashboardFilter==='waiting'||PRIORITIES.includes(priorityFilter)||lineFilter&&lineFilter!=='kite')return [];
+    if(dashboardFilter==='waiting'||PRIORITIES.includes(priorityFilter)||lineFilter&&lineFilter!=='boardwing')return [];
     sampleState.forEach(function(s){if(!groups.has(s.family))groups.set(s.family,[]);groups.get(s.family).push(s);});
     return Array.from(groups.entries()).filter(function(entry){
       var status=sampleFamilyStatus(entry[0]);
@@ -3241,7 +3242,8 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
       if(!values.name){alert(t('请先填写产品系列名称。'));return;}
       if(editingProject){return saveProjectSettings(values);}
       var id='project-'+Date.now(),owner=values.owner||'待分配',variantName=values.variant||'待定义';
-      var project={id:id,name:values.name,part:values.part||'其他',businessLine:creatingProjectLine,priority:values.priority||'中',owner:owner,updated:localDateString(),variants:[{name:variantName,node:'项目启动',r:owner,a:owner,due:'',status:'未开始',progress:0,approval:'—',next:''}],approvals:[],milestones:milestones(0,0,false),samples:[]};
+      var projectLine=creatingProjectLine==='boardwing'?(values.part==='风筝系列'?'kite':'surfboard'):creatingProjectLine;
+      var project={id:id,name:values.name,part:values.part||'其他',businessLine:projectLine,priority:values.priority||'中',owner:owner,updated:localDateString(),variants:[{name:variantName,node:'项目启动',r:owner,a:owner,due:'',status:'未开始',progress:0,approval:'—',next:''}],approvals:[],milestones:milestones(0,0,false),samples:[]};
       normalizeWorkflow(project);project.releaseDate=dateField(values.releaseDate);if(project.releaseDate){
         var first=project.variants[0].milestones.find(openMilestone);
         if(first)Object.assign(project.variants[0],milestoneSummary(first),{currentMilestoneId:first.id});
