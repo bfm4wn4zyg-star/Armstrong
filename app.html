@@ -1782,7 +1782,7 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
     '等待确认中':'Pending Confirmation','确认事项':'Confirmation Item','提交人':'Submitted By','待确认人':'Approver','提交日期':'Submitted',
     '需要日期':'Needed By','已等待':'Waiting','影响':'Impact','状态':'Status','尺寸并行矩阵':'Parallel Size Matrix','当前里程碑':'Current Milestone',
     '执行人 R':'Responsible R','负责人 A':'Accountable A','计划日期':'Planned Date','待确认事项':'Confirmation Item','进度':'Progress',
-    '水翼事业部':'Hydrofoil','板翼事业部':'Boards & Wings','冲浪板事业部':'Surfboard','风筝事业部':'Kite','配件事业部':'Accessories','暂无项目':'No projects',
+    '水翼事业部':'Hydrofoil','板翼事业部':'Foils & Boards','冲浪板事业部':'Surfboard','风筝事业部':'Wings','配件事业部':'Accessories','暂无项目':'No projects',
     '已完成':'Completed','进行中':'In Progress','已延误':'Delayed','阻塞':'Blocked','待确认':'Pending','暂停':'Paused','未开始':'Not Started',
     '不适用':'N/A','待排期':'To Be Scheduled','待图档':'Awaiting Drawing','待处理':'Pending Items','资料准备中':'Preparing',
     '产品型号':'Product Models','已完成 / 已出货':'Completed / Shipped','生产进行中':'In Production','等待图档':'Awaiting Drawing',
@@ -2553,8 +2553,8 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   }
   var creatingProjectLine='hydrofoil';
   var BUSINESS_LINES=[
-    {id:'hydrofoil',name:'水翼事业部',en:'Foils',icon:'◉'},
-    {id:'boardwing',name:'板翼事业部',en:'Boards & Wings',icon:'◒'},
+    {id:'hydrofoil',name:'板翼事业部',en:'Foils & Boards',icon:'◉'},
+    {id:'boardwing',name:'风筝事业部',en:'Wings',icon:'◒'},
     {id:'accessories',name:'配件事业部',en:'Accessories',icon:'⚙'}
   ];
   function businessLineMatches(groupId,lineId){return groupId==='boardwing'?(lineId==='surfboard'||lineId==='kite'):groupId===lineId;}
