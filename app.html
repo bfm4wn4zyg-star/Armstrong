@@ -2846,7 +2846,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     var families=Array.from(new Set(sampleState.map(function(sample){return sample.family;})));
     var statuses=seriesState.map(seriesStatus).concat(families.map(sampleFamilyStatus));
     var models=seriesState.flatMap(function(p){return p.variants;}).concat(sampleState);
-    var lines=new Set(seriesState.map(function(p){return p.businessLine;}));if(families.length)lines.add('kite');
+    var lines=new Set(seriesState.map(function(p){return p.businessLine==='surfboard'||p.businessLine==='kite'?'boardwing':p.businessLine;}));if(families.length)lines.add('boardwing');
     var affected=seriesState.reduce(function(total,p){return total+affectedVariantCount(p);},0)+
       families.reduce(function(total,f){return total+affectedSampleCount(f);},0);
     var pending=allApprovals().filter(function(x){return x.gate.status==='待确认';});
