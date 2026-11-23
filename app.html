@@ -1682,6 +1682,64 @@ html[lang^="zh"] .dashboard5-theme :is(.health-matrix-head h2,.panel-head h2,.ga
 @media(prefers-reduced-motion:reduce) {
   .dashboard5-theme.d6-style :is(.stats .stat,.health-tile,.confirmation-load-list .load-person) {transition:none}
 }
+/* Mobile dashboard pass: compact controls, swipeable summaries and full-screen detail editing. */
+@media(max-width:700px) {
+  html {font-size:16px;-webkit-text-size-adjust:100%}
+  body.dashboard5-theme {overflow-x:hidden;background:var(--reading-canvas)}
+  .dashboard5-theme .dashboard-topbar {height:54px;padding:0 12px}
+  .dashboard5-theme .dashboard-topbar .breadcrumb {gap:8px;font-size:16px}
+  .dashboard5-theme .topbar-meta i,.dashboard5-theme .topbar-meta>span {display:none}
+  .dashboard5-theme .app {width:100%;max-width:none;padding:10px 10px 32px}
+  .dashboard5-theme.d6-style:not(.presentation-mode) .dashboard-hero {display:flex!important;min-height:0;margin:0 0 12px;border-radius:14px;flex-direction:column;background:#fff}
+  .dashboard5-theme.d6-style:not(.presentation-mode) .dashboard-hero::before {inset:auto 0 0 auto;width:100%;height:68%;opacity:.1;background-position:38% 58%;mask-image:linear-gradient(180deg,transparent,#000 50%)}
+  .dashboard5-theme.d6-style:not(.presentation-mode) .dashboard-hero .dashboard-utility {position:static!important;order:1;padding:9px 10px!important;border-bottom:1px solid var(--reading-line);background:#f7f8f9}
+  .dashboard5-theme.d6-style:not(.presentation-mode) .dashboard-hero .dashboard-utility .actions {position:static!important;display:flex;width:100%;max-width:100%;gap:7px;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .dashboard5-theme .dashboard-hero .dashboard-utility .actions::-webkit-scrollbar {display:none}
+  .dashboard5-theme .dashboard-hero .dashboard-utility .actions>* {flex:0 0 auto}
+  .dashboard5-theme .dashboard-hero .dashboard-utility .btn {min-height:38px;padding:7px 11px;font-size:14px;white-space:nowrap}
+  .dashboard5-theme .dashboard-hero .language-switch button {min-width:40px;height:32px;padding:0 8px}
+  .dashboard5-theme .dashboard-hero .team-identity {display:inline-flex;min-height:38px;align-items:center;padding:0 7px;font-size:14px;white-space:nowrap}
+  .dashboard5-theme.d6-style:not(.presentation-mode) .dashboard-hero .header {position:relative!important;order:2;display:block;min-height:0!important;padding:20px 16px 22px!important}
+  .dashboard5-theme.d6-style:not(.presentation-mode) .dashboard-hero .header>div:first-child {max-width:100%}
+  .dashboard5-theme.d6-style:not(.presentation-mode) .dashboard-hero .header h1 {margin:2px 0 7px;font-size:30px;line-height:1.13}
+  .dashboard5-theme .d6-headline {max-width:92%;margin:0;font-size:14px;line-height:1.5}
+  .dashboard5-theme .stats {display:flex!important;grid-template-columns:none!important;gap:9px;margin:0 -10px 14px;padding:0 10px 4px;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-inline:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .dashboard5-theme .stats::-webkit-scrollbar {display:none}
+  .dashboard5-theme.d6-style .stats .d6-kpi {flex:0 0 168px;width:168px;min-height:112px;padding:14px;scroll-snap-align:start;border-radius:14px}
+  .dashboard5-theme.d6-style .stats .d6-kpi .n {font-size:30px}
+  .dashboard5-theme.d6-style .d6-kpi .stat-label {font-size:15px}
+  .dashboard5-theme .d6-kpi-detail {font-size:13px}
+  .dashboard5-theme #executiveFocus {margin-bottom:12px}
+  .dashboard5-theme #executiveFocus>.health-matrix-card {border-radius:14px}
+  .dashboard5-theme #executiveFocus .health-matrix-head {padding:14px}
+  .dashboard5-theme #executiveFocus .health-matrix-head h2 {font-size:22px}
+  .dashboard5-theme #executiveFocus .portfolio-line {padding:12px 14px 14px}
+  .dashboard5-theme #executiveFocus .portfolio-line-grid .health-tile {width:min(76vw,250px);flex-basis:min(76vw,250px);min-height:116px}
+  .dashboard5-theme .workspace-toolbar {border-radius:13px}
+  .dashboard5-theme .workspace-toolbar .tabs {display:flex;gap:18px;padding:0 14px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+  .dashboard5-theme .workspace-toolbar .tabs::-webkit-scrollbar {display:none}
+  .dashboard5-theme .workspace-toolbar .tab {flex:0 0 auto;padding-block:11px;font-size:14px;white-space:nowrap}
+  .dashboard5-theme .workspace-filters {display:grid;grid-template-columns:minmax(0,1fr);padding:12px;gap:10px}
+  .dashboard5-theme .workspace-filters .priority-controls {grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .dashboard5-theme .workspace-reset {width:100%;grid-column:1/-1}
+  .dashboard5-theme #main .workspace-section-head {padding:13px 14px}
+  .dashboard5-theme #main .workspace-section-head h2 {font-size:20px}
+  .dashboard5-theme .workspace-section-head p {font-size:14px}
+  .dashboard5-theme :is(.overview-shell,.gate-table-wrap,.matrix,.sample-table-wrap) {scrollbar-width:thin;overscroll-behavior-inline:contain}
+  .dashboard5-theme .overview-table {min-width:760px!important}
+  .dashboard5-theme .gate-table {min-width:980px!important}
+  .dashboard5-theme .mask {padding:0}
+  .dashboard5-theme .drawer {width:100vw;height:100dvh;max-height:100dvh;border:0;border-radius:0}
+  .dashboard5-theme .drawer-head {padding:15px 16px}
+  .dashboard5-theme .drawer-body {padding:14px 12px 96px}
+  .dashboard5-theme .savebar {position:absolute;right:0;bottom:0;left:0;padding:10px 12px;box-shadow:0 -8px 24px rgba(24,39,60,.08)}
+  .dashboard5-theme .savebar .btn {min-height:44px;flex:1}
+  .dashboard5-theme :is(input,select,textarea) {font-size:16px!important}
+}
+@media(max-width:390px) {
+  .dashboard5-theme.d6-style .stats .d6-kpi {flex-basis:154px;width:154px}
+  .dashboard5-theme.d6-style:not(.presentation-mode) .dashboard-hero .header h1 {font-size:27px}
+}
 </style>
 <style>
 .reminder-demo {padding-top:20px;border-top:1px solid #dde2e8}
