@@ -1751,7 +1751,7 @@ html[lang^="zh"] .dashboard5-theme :is(.health-matrix-head h2,.panel-head h2,.ga
 <link rel="stylesheet" href="dashboard-polish.css?v=20261124-unified-title">
 <link rel="stylesheet" href="portfolio-layout.css?v=20261124-grid1">
 <link rel="stylesheet" href="design-system.css?v=20261124-sidebar-actions">
-<link rel="stylesheet" href="nimblify-system.css?v=20261124-column-alignment">
+<link rel="stylesheet" href="nimblify-system.css?v=20261124-confirmation-center">
 </head>
 <body class="dashboard5-theme d6-style readonly-dashboard">
 <script type="application/json" id="teamBootstrap"><!--ARMSTRONG_BOOTSTRAP--></script>
@@ -1776,6 +1776,18 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
   var requestedLang=new URLSearchParams(location.search).get('lang');
   var lang=requestedLang==='en'||requestedLang==='zh'?requestedLang:(readDashboardPreference('foil_dashboard_language')||'zh');
   var en={
+    '全局项目概况':'Workspace snapshot',
+    '全部数据 · 不受搜索筛选影响':'All data · independent of search and filters',
+    '确认中心':'Confirmation Center',
+    '集中查看确认事项、等待时间与人员积压。':'Review confirmation items, waiting times and approver workload.',
+    '待确认人员':'Approvers',
+    '按人员汇总待确认任务数，点击可查看具体事项。':'Review pending items by approver. Select a person to view their items.',
+    '共 {people} 位人员 · {items} 项待确认':'{people} approvers · {items} pending items',
+    '项待确认':'pending',
+    '项超期':'overdue',
+    '共同确认事项计入各确认人的待办，事项总数不重复统计。':'Joint confirmations count toward each approver’s workload; the total item count is deduplicated.',
+    '当前没有待确认人员':'No approvers with pending items',
+    '仅待确认':'Pending only',
     '全部项目':'All projects',
     '网格':'Grid',
     '列表':'List',
@@ -2100,6 +2112,7 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
     <span class="nav-section" data-i18n-zh="工作台" data-i18n-en="WORKSPACE">工作台</span>
     <button class="sidebar-link active" data-workspace-view="overview" onclick="setView('overview')"><i>⌂</i><span data-i18n-zh="项目总览" data-i18n-en="Project Overview">项目总览</span></button>
     <button class="sidebar-link" data-workspace-view="matrix" onclick="setView('matrix')"><i>▦</i><span data-i18n-zh="里程碑工作台" data-i18n-en="Milestone Workspace">里程碑工作台</span></button>
+    <button class="sidebar-link" data-workspace-view="confirmations" onclick="setView('confirmations')"><i>☑</i><span data-i18n-zh="确认中心" data-i18n-en="Confirmation Center">确认中心</span></button>
     <button class="sidebar-link" data-workspace-view="reports" onclick="setView('reports')"><i>▤</i><span>日报 / 周报</span></button><div class="sidebar-search"><span>⌕</span><input id="sidebarSearch" type="search" placeholder="搜索项目、型号或负责人" data-placeholder-zh="搜索项目、型号或负责人" data-placeholder-en="Search projects, models or owners" oninput="renderSidebarProjects()"></div>
     <span class="nav-section project-nav-head"><span data-i18n-zh="产品线" data-i18n-en="PRODUCT LINES">产品线</span></span>
     <div class="sidebar-projects" id="sidebarProjects"></div>
@@ -2121,7 +2134,7 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
   <div id="mobileUtilitySlot"><details id="mobileActions" class="mobile-actions"><summary data-i18n-zh="操作与偏好" data-i18n-en="Actions & preferences">操作与偏好</summary></details></div>
   <script>(function(){var b=document.getElementById('modeSwitch'),t=window.dashboardText;if(TEAM.role==='viewer'){b.hidden=true;return;}if(window.DASHBOARD_PM_MODE){b.textContent=t('返回只读看板');b.onclick=function(){switchDashboardMode(false);};}else{b.textContent=t('进入 PM 维护');b.onclick=function(){switchDashboardMode(true);};}})();</script>
   </section>
-  <div class="toolbar workspace-toolbar"><div class="tabs"><button class="tab active" data-view="overview" data-i18n-zh="项目总览" data-i18n-en="Project Overview" onclick="setView('overview')">项目总览</button><button class="tab" data-view="matrix" data-i18n-zh="里程碑工作台" data-i18n-en="Milestone Workspace" onclick="setView('matrix')">里程碑工作台</button><button class="tab" data-view="reports" onclick="setView('reports')">日报 / 周报</button></div><div class="workspace-filters" id="workspaceFilters"><div class="priority-controls" id="priorityControls"><div class="workspace-filter-field"><label for="businessFilter">事业部</label><select id="businessFilter"></select></div><div class="workspace-filter-field"><label for="seriesStatusFilter">状态</label><select id="seriesStatusFilter"></select></div><div class="workspace-filter-field"><label for="priorityFilter">优先级</label><select id="priorityFilter"></select></div><div class="workspace-filter-field"><label for="prioritySort">排序方式</label><select id="prioritySort"></select></div><button class="btn workspace-reset" id="workspaceReset" type="button">清除筛选</button></div></div></div>
+  <div class="toolbar workspace-toolbar"><div class="tabs"><button class="tab active" data-view="overview" data-i18n-zh="项目总览" data-i18n-en="Project Overview" onclick="setView('overview')">项目总览</button><button class="tab" data-view="matrix" data-i18n-zh="里程碑工作台" data-i18n-en="Milestone Workspace" onclick="setView('matrix')">里程碑工作台</button><button class="tab" data-view="confirmations" data-i18n-zh="确认中心" data-i18n-en="Confirmation Center" onclick="setView('confirmations')">确认中心</button><button class="tab" data-view="reports" onclick="setView('reports')">日报 / 周报</button></div><div class="workspace-filters" id="workspaceFilters"><div class="priority-controls" id="priorityControls"><div class="workspace-filter-field"><label for="businessFilter">事业部</label><select id="businessFilter"></select></div><div class="workspace-filter-field"><label for="seriesStatusFilter">状态</label><select id="seriesStatusFilter"></select></div><div class="workspace-filter-field"><label for="priorityFilter">优先级</label><select id="priorityFilter"></select></div><div class="workspace-filter-field"><label for="prioritySort">排序方式</label><select id="prioritySort"></select></div><button class="btn workspace-reset" id="workspaceReset" type="button">清除筛选</button></div></div></div>
   <section class="executive-focus" id="executiveFocus"></section>
   <section class="global-snapshot" id="globalSnapshot"><div class="snapshot-caption"><h2 data-i18n-zh="全局项目概况" data-i18n-en="Workspace snapshot">全局项目概况</h2><span data-i18n-zh="全部数据 · 不受搜索筛选影响" data-i18n-en="All data · independent of search and filters">全部数据 · 不受搜索筛选影响</span></div><section class="stats" id="stats"></section></section>
   <main id="main"></main>
@@ -2830,13 +2843,13 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     return out;
   }
   function gateBoardHtml(){
-    var gates=allApprovals().filter(function(x){return (!lineFilter||businessLineMatches(lineFilter,x.line))&&(!PRIORITIES.includes(priorityFilter)||priorityValue(x.priority)===priorityFilter)&&x.gate.status!=='已完成'&&(dashboardFilter!=='waiting'||x.gate.status==='待确认')&&(!gateSeriesFilter||x.seriesId===gateSeriesFilter)&&(!gateApproverFilter||approverNames(x.gate.approver).indexOf(gateApproverFilter)>=0);}).sort(function(a,b){var ao=overdueDays(a.gate),bo=overdueDays(b.gate);return bo-ao||waitingDays(b.gate)-waitingDays(a.gate);});
-    var english=window.DASHBOARD_LANG==='en',filterText=gateApproverFilter?(english?'Approver: '+gateApproverFilter:'待确认人：'+gateApproverFilter):gateSeriesFilter?(english?'Filtered by project':'已按项目筛选'):'';
+    var gates=allApprovals().filter(function(x){return (view==='confirmations'||!lineFilter||businessLineMatches(lineFilter,x.line))&&(view==='confirmations'||!PRIORITIES.includes(priorityFilter)||priorityValue(x.priority)===priorityFilter)&&x.gate.status!=='已完成'&&(dashboardFilter!=='waiting'||x.gate.status==='待确认')&&(!gateSeriesFilter||x.seriesId===gateSeriesFilter)&&(!gateApproverFilter||approverNames(x.gate.approver).indexOf(gateApproverFilter)>=0);}).sort(function(a,b){var ao=overdueDays(a.gate),bo=overdueDays(b.gate);return bo-ao||waitingDays(b.gate)-waitingDays(a.gate);});
+    var english=window.DASHBOARD_LANG==='en',filterText=gateApproverFilter?(english?'Approver: '+gateApproverFilter:'待确认人：'+gateApproverFilter):gateSeriesFilter?(english?'Filtered by project':'已按项目筛选'):dashboardFilter==='waiting'?t('仅待确认'):'';
     return '<section class="gate-board workspace-section" id="gateBoard"><div class="gate-board-head workspace-section-head"><div><h2>等待确认中</h2><p>超期按需要日期标记。</p></div><div class="gate-head-actions">'+(filterText?'<span class="active-gate-filter">'+esc(filterText)+'</span><button type="button" onclick="clearConfirmationFilter()">'+(english?'Clear filter':'清除筛选')+'</button>':'')+'<span class="gate-count">'+gates.filter(function(x){return x.gate.status==='待确认';}).length+'项待确认</span></div></div>'+
       '<div class="gate-table-wrap"><table class="gate-table"><colgroup><col class="gate-col-series"><col class="gate-col-question"><col class="gate-col-person"><col class="gate-col-person"><col class="gate-col-date"><col class="gate-col-date"><col class="gate-col-age"><col class="gate-col-impact"><col class="gate-col-status"></colgroup><thead><tr><th>产品系列 / 范围</th><th>确认事项</th><th>提交人</th><th>待确认人</th><th class="cell-center">提交日期</th><th class="cell-center">需要日期</th><th class="cell-center">已等待</th><th>影响</th><th class="cell-center table-status-cell">状态</th></tr></thead><tbody>'+
       gates.map(function(x){
         var a=x.gate,wait=waitingDays(a),over=overdueDays(a),stateText=over?'超期'+over+'天':a.status;
-        var ageTone=over||wait>=6?'hot':wait>=3?'warn':'';
+        var ageTone=wait>=6?'hot':wait>=3?'warn':'';
         return '<tr><td><b>'+esc(x.series)+'</b><span class="gate-scope">'+esc(a.scope)+'</span></td><td class="gate-kind">'+esc(confirmationTitle(a))+'</td><td>'+esc(a.submitter)+'</td><td><button type="button" class="approver-link" '+dashboardAction('filterConfirmations',['',approverNames(a.approver)[0]||a.approver])+'>'+esc(a.approver)+'</button></td><td class="cell-center">'+esc(a.submitted)+'</td><td class="cell-center">'+esc(a.needed)+'</td><td class="cell-center"><span class="age '+ageTone+'">'+waitingLabel(wait)+'</span></td><td class="gate-impact">'+esc(a.impact)+'</td><td class="cell-center table-status-cell"><span class="status overview-pill '+(over?'late':statusClass(a.status))+'">'+esc(stateText)+'</span></td></tr>';
       }).join('')+(gates.length?'':'<tr><td colspan="9" class="gate-empty">'+(english?'No matching confirmation items':'没有符合当前筛选条件的确认事项')+'</td></tr>')+'</tbody></table></div></section>';
   }
@@ -2847,20 +2860,20 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   }
 
   function syncOverviewTabs(){
-    document.querySelectorAll('.tab,[data-workspace-view]').forEach(function(x){var id=x.dataset.view||x.dataset.workspaceView;x.classList.toggle('active',id===view);var label={overview:'项目总览',matrix:'里程碑工作台',reports:'日报 / 周报'}[id];if(label)x.setAttribute('aria-label',t(label));});
+    document.querySelectorAll('.tab,.sidebar-link[data-workspace-view]').forEach(function(x){var id=x.dataset.view||x.dataset.workspaceView;x.classList.toggle('active',id===view);var label={overview:'项目总览',matrix:'里程碑工作台',confirmations:'确认中心',reports:'日报 / 周报'}[id];if(label)x.setAttribute('aria-label',t(label));});
   }
   window.applyDashboardFilter=function(filter){
     setWorkspaceFilter(statusSelect,'');
-    dashboardFilter=filter||'all';gateApproverFilter='';gateSeriesFilter='';view=dashboardFilter==='models'?'matrix':'overview';syncOverviewTabs();render();
+    dashboardFilter=filter||'all';gateApproverFilter='';gateSeriesFilter='';view=dashboardFilter==='models'?'matrix':dashboardFilter==='waiting'?'confirmations':'overview';syncOverviewTabs();render();
     if(dashboardFilter==='waiting')setTimeout(function(){var target=document.getElementById('gateBoard');if(target)target.scrollIntoView({behavior:'smooth',block:'start'});},60);
     else setTimeout(function(){var target=document.querySelector('.overview-panel,.matrix');if(target)target.scrollIntoView({behavior:'smooth',block:'start'});},60);
   };
   window.filterConfirmations=function(seriesId,approver){
     setWorkspaceFilter(statusSelect,'');
-    dashboardFilter='waiting';gateSeriesFilter=seriesId||'';gateApproverFilter=approver||'';view='overview';syncOverviewTabs();render();
+    dashboardFilter='waiting';gateSeriesFilter=seriesId||'';gateApproverFilter=approver||'';view='confirmations';syncOverviewTabs();render();
     setTimeout(function(){var target=document.getElementById('gateBoard');if(target)target.scrollIntoView({behavior:'smooth',block:'start'});},60);
   };
-  window.clearConfirmationFilter=function(){gateSeriesFilter='';gateApproverFilter='';dashboardFilter='waiting';render();};
+  window.clearConfirmationFilter=function(){gateSeriesFilter='';gateApproverFilter='';dashboardFilter='all';render();};
 
   function d6MetricText(label,values){
     return t(label).replace(/\{(\w+)\}/g,function(token,key){return values[key]===undefined?token:values[key];});
@@ -2896,20 +2909,35 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     document.getElementById('d6Headline').textContent=d6MetricText('{active} 个系列未完成 · {pending} 项待确认 · {risk} 个系列延误或阻塞',{active:active,pending:pending.length,risk:risk});
   };
   function confirmationLoadHtml(){
-    var english=window.DASHBOARD_LANG==='en',people=Object.create(null);
-    allApprovals().filter(function(x){return x.gate.status==='待确认';}).forEach(function(x){
-      var wait=waitingDays(x.gate);
+    var people=Object.create(null),pending=allApprovals().filter(function(x){return x.gate.status==='待确认';});
+    pending.forEach(function(x){
       approverNames(x.gate.approver).forEach(function(name){
-        if(!people[name])people[name]={name:name,count:0,total:0,dated:0,max:0,overdue:0};
-        people[name].count++;if(wait!==null){people[name].dated++;people[name].total+=wait;people[name].max=Math.max(people[name].max,wait);}if(overdueDays(x.gate))people[name].overdue++;
+        if(!people[name])people[name]={name:name,count:0,overdue:0};
+        people[name].count++;if(overdueDays(x.gate))people[name].overdue++;
       });
     });
-    var ranked=Object.keys(people).map(function(k){var x=people[k];x.average=x.dated?Math.round(x.total/x.dated):null;return x;}).sort(function(a,b){return b.overdue-a.overdue||b.count-a.count||b.max-a.max;});
-    if(!ranked.length)return '';
-    return '<section class="confirmation-load workspace-section"><div class="confirmation-load-head workspace-section-head"><h2>按待确认人汇总</h2></div><div class="confirmation-load-list">'+ranked.map(function(x){
-      var tone=x.overdue?'danger':x.max>=3?'warning':'normal';
-      return '<button type="button" class="load-person '+tone+'" '+dashboardAction('filterConfirmations',['',x.name])+'><span class="load-name">'+esc(x.name)+'</span><strong>'+x.count+(english?(x.count===1?' item':' items'):' 项')+'</strong><small>'+(x.average===null?'—':english?'Avg '+x.average+'d · Max '+x.max+'d':'平均 '+x.average+' 天 · 最长 '+x.max+' 天')+'</small></button>';
-    }).join('')+'</div></section>';
+    var ranked=Object.values(people).sort(function(a,b){return b.overdue-a.overdue||b.count-a.count||a.name.localeCompare(b.name);});
+    var summary=t('共 {people} 位人员 · {items} 项待确认').replace('{people}',ranked.length).replace('{items}',pending.length);
+    return '<section class="confirm-people-band"><div class="confirm-people-intro"><div><h2>'+esc(t('待确认人员'))+'</h2><span>'+esc(summary)+'</span></div><p>'+esc(t('按人员汇总待确认任务数，点击可查看具体事项。'))+'</p></div><div class="confirm-people-cards">'+(ranked.length?ranked.map(function(x,i){
+      return '<button type="button" class="confirm-person-card '+(gateApproverFilter===x.name?'selected':'')+'" '+dashboardAction('filterConfirmations',['',x.name])+' title="'+esc(t('共同确认事项计入各确认人的待办，事项总数不重复统计。'))+'"><span class="confirm-avatar avatar-'+i%3+'" aria-hidden="true">'+esc(initials(x.name))+'</span><span class="confirm-person-copy"><b>'+esc(x.name)+'</b><span><strong>'+x.count+'</strong> '+esc(t('项待确认'))+' <i>·</i> <strong class="'+(x.overdue?'overdue':'')+'">'+x.overdue+'</strong> '+esc(t('项超期'))+'</span></span><span class="confirm-person-chevron" aria-hidden="true">›</span></button>';
+    }).join(''):'<p class="confirm-people-empty">'+esc(t('当前没有待确认人员'))+'</p>')+'</div></section>';
+  }
+  function confirmationCenterHtml(){
+    var families=Array.from(new Set(sampleState.map(function(s){return s.family;})));
+    var statuses=seriesState.map(seriesStatus).concat(families.map(sampleFamilyStatus));
+    var models=seriesState.flatMap(function(p){return p.variants;}).concat(sampleState);
+    var lines=new Set(seriesState.map(function(p){return p.businessLine==='surfboard'||p.businessLine==='kite'?'boardwing':p.businessLine;}));if(families.length)lines.add('boardwing');
+    var affected=seriesState.reduce(function(n,p){return n+affectedVariantCount(p);},0)+families.reduce(function(n,f){return n+affectedSampleCount(f);},0);
+    var pending=allApprovals().filter(function(x){return x.gate.status==='待确认';});
+    var badge=document.getElementById('pendingBadge');badge.hidden=!pending.length;badge.textContent=pending.length;
+    var waits=pending.map(function(x){return waitingDays(x.gate);}).filter(function(d){return d!==null;});
+    var metrics=[
+      [statuses.length,'产品系列','all','series',d6MetricText('涉及 {count} 个事业部',{count:lines.size})],
+      [models.length,'尺寸/型号','models','models',d6MetricText('{count} 个型号受影响',{count:affected})],
+      [statuses.filter(function(s){return s!=='已完成';}).length,'未完成系列','active','active',d6MetricText('{count} 个型号进行中',{count:models.filter(function(m){return m.status==='进行中';}).length})],
+      [pending.length,'等待确认中','waiting','warn',waits.length?d6MetricText('最长等待 {count} 天',{count:Math.max.apply(null,waits)}):t('当前没有等待确认的事项。')]
+    ];
+    return '<div class="confirmation-center"><section class="confirm-summary"><div class="confirm-summary-heading"><h2>'+esc(t('全局项目概况'))+'</h2><span>'+esc(t('全部数据 · 不受搜索筛选影响'))+'</span></div><div class="confirm-metrics">'+metrics.map(function(m){return overviewMetric.apply(null,m);}).join('')+'</div></section>'+gateBoardHtml()+confirmationLoadHtml()+'</div>';
   }
   window.updatePortfolioScroll=function(shell){
     if(!shell)return;
@@ -2996,7 +3024,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
       return '<button type="button" class="portfolio-project '+tone+'" '+action+' title="'+esc(item.name)+'"><span class="portfolio-status '+statusClass(item.status)+'">'+esc(t(item.status))+'</span><span class="portfolio-illustration">'+portfolioIllustration(item.line.id)+'</span><span class="portfolio-project-info"><span class="portfolio-project-name">'+esc(item.name)+'</span><span class="portfolio-project-subtitle">'+esc(t(item.part))+' · '+esc(english?item.line.en:item.line.name)+'</span></span><span class="portfolio-percent">'+progress+'%</span><span class="portfolio-track" role="meter" aria-label="'+esc(item.name)+'" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'"><i style="width:'+progress+'%"></i></span><span class="portfolio-project-meta" title="'+esc(owner+' · '+impact)+'"><span class="portfolio-owner">'+esc(owner)+'</span><span>'+esc(impact)+'</span></span><span class="portfolio-updated">'+clock+'<span>'+esc(portfolioDateLabel(item.updated))+'</span>'+(item.priority?priorityTag(item):'')+'</span></button>';
     }).join('');
     document.getElementById('executiveFocus').innerHTML='<section class="portfolio-board"><div class="portfolio-controls"><div class="portfolio-tabs" role="group" aria-label="'+esc(t('状态'))+'">'+tabs+'</div><div class="portfolio-view-controls"><span>'+items.length+' '+esc(t('个项目'))+'</span><button type="button" aria-pressed="'+(portfolioLayout==='grid')+'" '+dashboardAction('setPortfolioLayout',['grid'])+'>'+esc(t('网格'))+'</button><button type="button" aria-pressed="'+(portfolioLayout==='list')+'" '+dashboardAction('setPortfolioLayout',['list'])+'>'+esc(t('列表'))+'</button></div></div><div class="portfolio-project-grid '+(portfolioLayout==='list'?'is-list':'')+'">'+(cards||'<p class="portfolio-empty">'+esc(t('没有符合筛选条件的项目，请调整筛选。'))+'</p>')+'</div></section>';
-    document.getElementById('confirmationLoadSummary').innerHTML=confirmationLoadHtml();
+    document.getElementById('confirmationLoadSummary').innerHTML='';
   };
   function sampleOverviewGroups(){
     var groups=new Map(),input=document.getElementById('search'),q=input?input.value.trim().toLowerCase():'';
@@ -3032,7 +3060,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
         '<td>—</td><td><span class="status '+statusClass(s.status)+'">'+esc(s.status)+'</span></td><td>'+safePercent(s.progress)+'%</td></tr>';
     }).join('');
   }
-  window.overviewHtml=function(){return gateBoardHtml();};
+  window.overviewHtml=function(){return '';};
   var workbenchProject='',workbenchVariant='';
   window.selectWorkbenchProject=function(value){workbenchProject=value;workbenchVariant='';renderDashboardResults();};
   window.selectWorkbenchVariant=function(value){workbenchVariant=value;renderDashboardResults();};
@@ -3784,6 +3812,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   }
   window.setView=function(v){
     view=v;dashboardFilter='all';gateApproverFilter='';gateSeriesFilter='';syncOverviewTabs();render();
+    window.scrollTo(0,0);
   };
   window.searchDashboardProjects=function(value){
     writeDashboardPreference('foil_dashboard_search',value);
@@ -3794,13 +3823,13 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   window.renderDashboardResults=function(){
     document.body.dataset.workspaceView=view;
     syncOverviewTabs();
-    var headings={overview:['项目健康度总览','追踪项目进度，识别风险，让团队的每一步清晰可见。'],matrix:['里程碑工作台','按型号查看完整流程、负责人、日期和下一步动作。'],reports:['日报 / 周报','按日期汇总进展、风险与待确认事项。'],samples:['样品计划','按图档与生产状态跟进各尺寸样品。']};
+    var headings={confirmations:['确认中心','集中查看确认事项、等待时间与人员积压。'],overview:['项目健康度总览','追踪项目进度，识别风险，让团队的每一步清晰可见。'],matrix:['里程碑工作台','按型号查看完整流程、负责人、日期和下一步动作。'],reports:['日报 / 周报','按日期汇总进展、风险与待确认事项。'],samples:['样品计划','按图档与生产状态跟进各尺寸样品。']};
     var heading=headings[view]||headings.overview;
     document.getElementById('workspaceTitle').textContent=t(heading[0]);
     document.getElementById('workspaceSubtitle').textContent=t(heading[1]);
     document.getElementById('workspaceNewProject').hidden=view!=='overview'||!canManageProjects();
     if(view==='overview')renderExecutiveFocus();
-    main.innerHTML=view==='samples'?samplePlanHtml():view==='matrix'?matrixHtml():view==='reports'?reportsHtml():overviewHtml();
+    main.innerHTML=view==='samples'?samplePlanHtml():view==='matrix'?matrixHtml():view==='reports'?reportsHtml():view==='confirmations'?confirmationCenterHtml():overviewHtml();
     reapplyLang();
     renderSharedFilters();
     decorateSharedTables();
@@ -3814,7 +3843,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     document.getElementById('globalSnapshot').hidden=view!=='overview';
     var focusEl=document.getElementById('executiveFocus');
     if(focusEl)focusEl.hidden=view!=='overview';
-    document.getElementById('confirmationLoadSummary').hidden=view!=='overview';
+    document.getElementById('confirmationLoadSummary').hidden=true;
     presentationHome.hidden=!presentationState||view==='overview';
     if(overview)renderStats();
     renderDashboardResults();
@@ -3937,7 +3966,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   var requestedNew=query.get('new');
   if(requestedNew==='1'&&!READ_ONLY)openNewProject();
   else if(requestedView==='samples'){setView('samples');if(requestedSample)openSample(requestedSample);}
-  else if(requestedView==='reports'||requestedView==='matrix')setView(requestedView);
+  else if(requestedView==='reports'||requestedView==='matrix'||requestedView==='confirmations')setView(requestedView);
   else if(requested&&requestedVariant) openVariant(requested,requestedVariant);
   else if(requested) openProject(requested);
 })();

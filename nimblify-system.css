@@ -295,6 +295,77 @@ body.dashboard5-theme.d6-style:not(.presentation-mode)[data-workspace-view="samp
 @media(max-width:540px){body.dashboard5-theme.d6-style .portfolio-project-grid{grid-template-columns:minmax(0,1fr)!important}body.dashboard5-theme.d6-style .portfolio-project{grid-template-columns:66px minmax(0,1fr)!important}body.dashboard5-theme.d6-style .portfolio-illustration{width:66px}body.dashboard5-theme.d6-style .global-snapshot .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}body.dashboard5-theme.d6-style .global-snapshot{padding:16px}body.dashboard5-theme.d6-style .portfolio-project-name{font-size:16px}}
 @media(prefers-reduced-motion:reduce){body.dashboard5-theme.d6-style *{transition:none!important;scroll-behavior:auto!important}}
 
+/* Dedicated confirmation workspace: four cards, one table, one approver band. */
+body.dashboard5-theme.d6-style .confirmation-center{display:grid;gap:24px;min-width:0}
+body.dashboard5-theme.d6-style .confirm-summary{min-width:0}
+body.dashboard5-theme.d6-style .confirm-summary-heading{display:flex;align-items:baseline;gap:16px;margin-bottom:16px}
+body.dashboard5-theme.d6-style .confirm-summary-heading h2{margin:0;font:600 20px/1.4 var(--brand-body);color:var(--ds-ink)}
+body.dashboard5-theme.d6-style .confirm-summary-heading>span{font-size:13px;color:var(--ds-muted)}
+body.dashboard5-theme.d6-style .confirm-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+body.dashboard5-theme.d6-style .confirm-metrics .d6-kpi{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;width:100%;min-width:0;min-height:122px;height:auto;padding:20px 24px;border:1px solid #e1e4ea;border-radius:16px;background:#fff!important;box-shadow:var(--ds-shadow);text-align:left}
+body.dashboard5-theme.d6-style .confirm-metrics .stat-label{display:flex;align-items:center;gap:8px;color:#697386;font-size:14px;font-weight:400;line-height:1.5}
+body.dashboard5-theme.d6-style .confirm-metrics .n{margin:0!important;font:650 28px/1.1 var(--brand-body);color:#202435;letter-spacing:0}
+body.dashboard5-theme.d6-style .confirm-metrics .d6-kpi-detail{color:#697386;font-size:13px;line-height:1.5}
+body.dashboard5-theme.d6-style .confirm-metrics .stat-dot{width:8px;height:8px;flex-shrink:0;border-radius:50%;background:#4e8ed1}
+body.dashboard5-theme.d6-style .confirm-metrics .models .stat-dot{background:#9b6dc5}
+body.dashboard5-theme.d6-style .confirm-metrics .active .stat-dot{background:#3289de;box-shadow:0 0 0 3px #e8f2ff}
+body.dashboard5-theme.d6-style .confirm-metrics .warn .stat-dot{background:#d49b22;box-shadow:0 0 0 3px #fff5d5}
+body.dashboard5-theme.d6-style .confirm-metrics .warn .stat-label{color:#a87510}
+body.dashboard5-theme.d6-style .confirm-metrics .d6-kpi.selected{border-color:#cfd9ed;box-shadow:var(--ds-shadow)}
+body.dashboard5-theme.d6-style .confirmation-center .gate-board{margin:0;border:1px solid #e1e4ea;border-radius:18px;background:#fff;overflow:hidden;box-shadow:0 2px 8px #17203904}
+body.dashboard5-theme.d6-style .confirmation-center .gate-board-head{padding:24px;min-height:90px}
+body.dashboard5-theme.d6-style .confirmation-center .gate-board-head h2{font:650 22px/1.4 var(--brand-body)}
+body.dashboard5-theme.d6-style .confirmation-center .gate-board-head p{font-size:14px;color:#697386}
+body.dashboard5-theme.d6-style .confirmation-center .gate-count{padding:5px 12px;background:#fff0c9;color:#94620a;border-radius:999px;font-size:13px;font-weight:500;white-space:nowrap}
+body.dashboard5-theme.d6-style #main .confirmation-center .gate-table th{padding:14px 20px;background:#f8f9fc;color:#59616e;font-size:14px;font-weight:500}
+body.dashboard5-theme.d6-style #main .confirmation-center .gate-table td{padding:20px;color:#343b48;font-size:14px;line-height:1.65;background:#fff;vertical-align:middle}
+body.dashboard5-theme.d6-style #main .confirmation-center .gate-table td>b{font-size:15px;font-weight:600;color:#202435}
+body.dashboard5-theme.d6-style #main .confirmation-center .gate-table :is(.gate-kind,.gate-impact){font-weight:400}
+body.dashboard5-theme.d6-style #main .confirmation-center .gate-table .approver-link{font-size:14px;font-weight:400;color:#2563eb}
+body.dashboard5-theme.d6-style #main .confirmation-center .gate-scope{font-size:13px;margin-top:3px;color:#697386}
+body.dashboard5-theme.d6-style .confirmation-center .age{min-width:52px;min-height:26px;padding:4px 10px;display:inline-flex;align-items:center;justify-content:center;background:#f2f3f6;border:0;border-radius:999px;font-size:13px;line-height:1.3;color:#697386}
+body.dashboard5-theme.d6-style .confirmation-center .age.hot{background:#fce5e8;color:#bb2333}
+body.dashboard5-theme.d6-style .confirmation-center .age.warn{background:#fff0c9;color:#9c6808}
+body.dashboard5-theme.d6-style .confirmation-center .gate-table .status{min-height:28px;border-radius:8px;font-size:13px;font-weight:400;padding:5px 9px}
+body.dashboard5-theme.d6-style .confirm-people-band{display:grid;grid-template-columns:minmax(230px,.95fr) minmax(0,2.6fr);align-items:center;gap:24px;padding:20px 24px;background:linear-gradient(110deg,#fbeaed,#fbf3f5 74%,#f9f2f5);border-radius:18px;min-width:0}
+body.dashboard5-theme.d6-style .confirm-people-intro{min-width:0}
+body.dashboard5-theme.d6-style .confirm-people-intro>div{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px}
+body.dashboard5-theme.d6-style .confirm-people-intro h2{font:650 21px/1.4 var(--brand-body);margin:0;color:#202435}
+body.dashboard5-theme.d6-style .confirm-people-intro span{font-size:12px;color:#8b7780}
+body.dashboard5-theme.d6-style .confirm-people-intro p{font-size:13px;line-height:1.6;color:#74666c;margin:8px 0 0}
+body.dashboard5-theme.d6-style .confirm-people-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;min-width:0}
+body.dashboard5-theme.d6-style .confirm-person-card{display:flex;align-items:center;gap:12px;min-width:0;min-height:88px;padding:16px;background:#fff;border:1px solid #e7e2e6;border-radius:14px;text-align:left;box-shadow:0 3px 8px #30203006;cursor:pointer;transition:border-color .18s,transform .18s}
+body.dashboard5-theme.d6-style .confirm-person-card.selected{border-color:#d6a8b1;box-shadow:0 0 0 2px #f5dce2}
+body.dashboard5-theme.d6-style .confirm-avatar{width:46px;height:46px;flex-shrink:0;display:grid;place-items:center;background:linear-gradient(145deg,#e3efff,#c6d9f4);border:3px solid #eff5ff;border-radius:50%;font-size:16px;font-weight:650;color:#416394}
+body.dashboard5-theme.d6-style .confirm-avatar.avatar-1{background:linear-gradient(145deg,#e1f3e4,#b5d9c3);border-color:#edf8f0;color:#457258}
+body.dashboard5-theme.d6-style .confirm-avatar.avatar-2{background:linear-gradient(145deg,#f0e6fa,#dbbfed);border-color:#f6edff;color:#80629c}
+body.dashboard5-theme.d6-style .confirm-person-copy{display:grid;gap:4px;min-width:0;flex:1}
+body.dashboard5-theme.d6-style .confirm-person-copy>b{font-size:16px;font-weight:600;color:#202435;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.dashboard5-theme.d6-style .confirm-person-copy>span{font-size:12px;color:#697386;line-height:1.5}
+body.dashboard5-theme.d6-style .confirm-person-copy strong{font-size:15px;font-weight:650;color:#202435}
+body.dashboard5-theme.d6-style .confirm-person-copy strong.overdue{color:#bb2333}
+body.dashboard5-theme.d6-style .confirm-person-copy i{font-style:normal;color:#c4b7be;padding-inline:4px}
+body.dashboard5-theme.d6-style .confirm-person-chevron{font-size:24px;font-weight:300;color:#7f8490;flex-shrink:0}
+body.dashboard5-theme.d6-style .confirm-people-empty{grid-column:1/-1;padding:16px;margin:0;color:#8b7780;font-size:14px}
+@media(hover:hover){body.dashboard5-theme.d6-style .confirm-person-card:hover{transform:translateY(-2px);border-color:#d3bcc4}}
+@media(max-width:1400px){body.dashboard5-theme.d6-style .confirm-people-band{grid-template-columns:minmax(0,1fr)}body.dashboard5-theme.d6-style .confirm-people-intro>div{justify-content:flex-start;gap:16px}}
+@media(max-width:1000px){body.dashboard5-theme.d6-style .confirm-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:768px){
+ body.dashboard5-theme.d6-style .confirmation-center{gap:20px}
+ body.dashboard5-theme.d6-style .confirm-summary-heading{flex-direction:column;align-items:flex-start;gap:4px}
+ body.dashboard5-theme.d6-style .confirm-metrics{gap:12px}
+ body.dashboard5-theme.d6-style .confirm-metrics .d6-kpi{min-height:120px;padding:16px;gap:6px;flex:none!important}
+ body.dashboard5-theme.d6-style .confirm-metrics .stat-label{font-size:13px}
+ body.dashboard5-theme.d6-style .confirm-metrics .n{font-size:26px}
+ body.dashboard5-theme.d6-style .confirm-metrics .d6-kpi-detail{font-size:12px}
+ body.dashboard5-theme.d6-style .confirmation-center .gate-board-head{padding:20px 16px;min-height:0}
+ body.dashboard5-theme.d6-style .confirm-people-band{padding:20px 16px;gap:16px}
+ body.dashboard5-theme.d6-style .confirm-people-cards{grid-template-columns:minmax(0,1fr);gap:12px}
+ body.dashboard5-theme.d6-style .confirm-person-card{min-height:82px}
+ body.dashboard5-theme.d6-style .workspace-toolbar>.tabs{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))}
+ body.dashboard5-theme.d6-style #main .confirmation-center .gate-table td{padding:0!important}
+}
+
 /* Column alignment is assigned once from the heading by decorateSharedTables().
    Keep this after legacy table rules: otherwise th defaults can override dates
    while their td.cell-center still centers the values. */
@@ -310,6 +381,7 @@ body.dashboard5-theme.d6-style .matrix.table-as-cards td[data-column-align] .bar
 /* Keep complete dates and status labels readable on smaller desktop screens.
    Only the table container scrolls; the page never grows wider. */
 @media(min-width:769px){
+ body.dashboard5-theme.d6-style #main .confirmation-center .gate-table{min-width:1280px!important}
  body.dashboard5-theme.d6-style #main .gate-table-wrap{overflow-x:auto!important;max-width:100%;scrollbar-width:thin}
  body.dashboard5-theme.d6-style #main .gate-table{display:table!important;min-width:1120px!important}
  body.dashboard5-theme.d6-style #main .gate-table :is(th,td):is(:nth-child(5),:nth-child(6),:nth-child(7),:nth-child(9)){white-space:nowrap}

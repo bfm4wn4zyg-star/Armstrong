@@ -58,3 +58,24 @@ checks covered equal card heights, report label/input edges and no page overflow
 at 375px and 1280px. Narrow desktop milestone/confirmation tables scroll within
 their own container so complete dates remain readable. Confirmation summary
 headings and cards now share the same section inset.
+
+## Dedicated confirmation center
+
+The confirmation table and approver workload band now live in a separate
+`confirmations` view, available from the sidebar/mobile navigation and
+`?view=confirmations`. The overview retains project cards and global metrics.
+Pending KPI controls and the topbar bell open the confirmation center; selecting
+an approver filters their pending items. Clearing returns all unfinished items,
+including records still in preparation.
+
+The center follows the supplied reference: four equal white metric cards, a
+rounded table panel and a rose-tinted horizontal approver band. Values come from
+existing records. Avatars use initials, not invented staff portraits. Joint
+confirmations count once in the total and once for each assigned approver.
+The center is independent of the overview's business-line/priority filters.
+
+Verified: four total unfinished rows vs. three pending rows in the isolated seed;
+Armie selection returns two rows; overview no longer renders the confirmation
+table; English default UI has no Chinese residue; 375px and 1280px have no page
+overflow; four metric cards have identical height at desktop width. No backend
+endpoint, record or permission was changed.
