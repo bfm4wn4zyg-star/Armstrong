@@ -3779,4 +3779,20 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
 
 </script>
 </body>
+<style id="uix-polish">
+:root{--bg:#f5f7fb;--card:#fff;--text:#172033;--sub:#65728a;--line:#e3e8f0;--blue:#2457d6;--shadow-soft:0 10px 30px rgba(23,32,51,.06)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;color:var(--text);background:#f6f8fb;letter-spacing:.005em}
+.app{max-width:1540px;padding:30px 32px 72px}
+.header{min-height:220px;border-radius:22px;padding:34px 40px;margin-bottom:22px;background-position:center,center 55%;box-shadow:var(--shadow-soft);overflow:hidden}
+.header h1{font-size:clamp(30px,3vw,44px);letter-spacing:-.035em;line-height:1.12}.subtitle{font-size:15px;line-height:1.6}
+.stats{gap:16px;margin-bottom:22px}.stat{min-height:128px;padding:22px 24px;border:1px solid #e2e8f1;border-radius:18px;box-shadow:var(--shadow-soft);transition:transform .2s ease,box-shadow .2s ease}.stat:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(23,32,51,.1)}.stat .l{font-size:14px}.stat .n{font-size:38px;letter-spacing:-.04em}.stat:before{width:8px;height:8px}
+.workspace-section,.health-matrix-card,.panel,.confirmation-load{border:1px solid #e3e8f0;border-radius:18px;background:#fff;box-shadow:var(--shadow-soft);overflow:hidden}.workspace-section-head,.health-matrix-head{padding:22px 26px;border-bottom:1px solid #edf0f4}.workspace-section-head h2,.health-matrix-head h2{font-size:20px;letter-spacing:-.02em}.workspace-section-head p{font-size:14px}
+.portfolio-lines{padding:0 24px 24px}.portfolio-line{padding:22px 0;border-bottom:1px solid #edf0f4}.portfolio-line:last-child{border-bottom:0}.portfolio-line>h3{font-size:16px;margin:0 0 14px}
+.health-tile{min-height:136px;border:1px solid #e3e8f0!important;border-top-width:1px!important;border-radius:16px!important;background:#fff!important;box-shadow:0 6px 18px rgba(23,32,51,.05);padding:18px!important;transition:transform .2s ease,box-shadow .2s ease}.health-tile:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(23,32,51,.1)}.health-name{font-size:15px;font-weight:700}.health-result strong{font-size:32px;letter-spacing:-.04em}
+.toolbar{padding:14px 18px;border:1px solid #e3e8f0;border-radius:14px;background:#fff;box-shadow:0 4px 16px rgba(23,32,51,.04)}.tabs{background:#f1f4f8;border:1px solid #e6ebf2}.tab{font-size:14px;padding:10px 16px}
+.table-shell,.gate-table-wrap{border-radius:16px;box-shadow:var(--shadow-soft)}.overview-table th,.gate-table th{font-size:13px;padding:17px 20px}.overview-table td,.gate-table td{font-size:14px;padding:18px 20px}.overview-table .meta,.overview-table .problem-sub,.gate-table .gate-scope{font-size:13px}.overview-table .status,.gate-table .status{min-width:72px;text-align:center;padding:5px 11px;line-height:20px}
+.btn{min-height:42px;border-radius:12px;padding:10px 16px}.btn.primary{box-shadow:0 8px 18px rgba(36,87,214,.2)}
+@media(max-width:900px){.app{padding:16px 14px 48px}.header{min-height:250px;padding:24px 22px;border-radius:18px}.header h1{font-size:32px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat{min-height:118px;padding:18px}.stat .n{font-size:34px}.health-matrix-card{border-radius:16px}.portfolio-lines{padding:0 16px 16px}.health-tile{min-height:124px}.workspace-section-head{padding:18px}.toolbar{padding:12px;overflow:auto}.overview-table,.gate-table{font-size:13px}}
+@media(max-width:560px){.stats{grid-template-columns:1fr}.stat{min-height:106px}.stat .n{font-size:32px}.header{min-height:230px}.header h1{font-size:28px}.header .actions{gap:8px}.header .btn{min-height:40px}.health-tile{min-height:116px}.health-result strong{font-size:28px}}
+</style>
 </html>
