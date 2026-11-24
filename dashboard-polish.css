@@ -111,4 +111,20 @@ body.dashboard5-theme.d6-style{
  .dashboard5-theme.d6-style .savebar{padding-bottom:max(12px,env(safe-area-inset-bottom))}
  .dashboard5-theme.d6-style .approval-list{grid-template-columns:1fr}
 }
+/* Allocate space to the decision and impact, rather than short metadata. */
+body.dashboard5-theme.d6-style .gate-table{table-layout:fixed;width:100%;min-width:1120px!important}
+body.dashboard5-theme.d6-style .gate-table col.gate-col-series{width:14%}
+body.dashboard5-theme.d6-style .gate-table col.gate-col-question{width:26%}
+body.dashboard5-theme.d6-style .gate-table col.gate-col-person{width:7%}
+body.dashboard5-theme.d6-style .gate-table col.gate-col-date{width:9%}
+body.dashboard5-theme.d6-style .gate-table col.gate-col-age{width:6%}
+body.dashboard5-theme.d6-style .gate-table col.gate-col-impact{width:14%}
+body.dashboard5-theme.d6-style .gate-table col.gate-col-status{width:8%}
+body.dashboard5-theme.d6-style .gate-table thead th{width:auto!important}
+body.dashboard5-theme.d6-style .gate-table :is(th,td){padding-inline:12px}
+body.dashboard5-theme.d6-style .gate-table :is(th,td):first-child{padding-left:20px}
+body.dashboard5-theme.d6-style .gate-table :is(th,td):nth-child(7),
+body.dashboard5-theme.d6-style .gate-table :is(th,td):nth-child(9){width:auto;min-width:0;max-width:none;padding-inline:6px;text-align:center}
+body.dashboard5-theme.d6-style .gate-table .table-status-cell .overview-pill{width:auto;min-width:0;max-width:100%;padding:5px 8px;white-space:normal}
+body.dashboard5-theme.d6-style .gate-table .gate-kind{overflow-wrap:break-word;word-break:normal;white-space:normal}
 @media(prefers-reduced-motion:reduce){.dashboard5-theme.d6-style *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
