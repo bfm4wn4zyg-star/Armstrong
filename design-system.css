@@ -112,6 +112,18 @@ body.dashboard5-theme.d6-style .series-tabs{display:flex;gap:4px;padding:4px;bac
 body.dashboard5-theme.d6-style .series-tabs button{min-height:36px;padding:8px 16px;border:0;border-radius:6px;background:transparent;color:var(--ds-muted);font-size:14px;font-weight:600}
 body.dashboard5-theme.d6-style .series-tabs button.active{background:#fff;color:var(--ds-ink);box-shadow:var(--ds-shadow)}
 /* Desktop grid toggle retains every matrix field in a labeled row card. */
+.workbench-selectors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;padding:24px;background:#f8fafc;border-bottom:1px solid var(--ds-line)}
+.workbench-selectors label{display:grid;gap:8px;font-size:13px;font-weight:600;color:var(--ds-muted);min-width:0}
+.workbench-selectors select{height:40px;min-width:0;width:100%;padding:8px 12px;border:1px solid var(--ds-line);border-radius:8px;background:#fff;color:var(--ds-ink);font:14px var(--brand-body)}
+.workbench-context{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;border-bottom:1px solid var(--ds-line)}
+.workbench-context h3,.workbench-empty h3{font-size:18px;font-weight:700;color:var(--ds-ink);margin:0 0 6px}
+.workbench-context p,.workbench-empty p{font-size:14px;color:var(--ds-muted);line-height:1.6;margin:0}
+.workbench-context>span{font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ds-muted)}
+.workbench-empty{padding:48px 24px;text-align:center}
+body.dashboard5-theme.d6-style .workbench-samples{width:100%;border-collapse:collapse}
+body.dashboard5-theme.d6-style .workbench-samples th{padding:16px 24px;background:#f8fafc;font-size:12px;font-weight:700;color:#475569;text-align:left;border-bottom:1px solid var(--ds-line)}
+body.dashboard5-theme.d6-style .workbench-samples td{padding:16px 24px;font-size:14px;border-bottom:1px solid var(--ds-line);overflow-wrap:anywhere}
+@media(max-width:768px){.workbench-selectors{grid-template-columns:minmax(0,1fr);padding:16px;gap:16px}.workbench-selectors select{font-size:16px}.workbench-context{padding:16px;flex-direction:column;align-items:flex-start}.workbench-empty{padding:32px 16px}}
 body.dashboard5-theme.d6-style .matrix.table-as-cards table{display:block;min-width:0!important}
 body.dashboard5-theme.d6-style .matrix.table-as-cards thead{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden}
 body.dashboard5-theme.d6-style .matrix.table-as-cards tbody{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:20px}

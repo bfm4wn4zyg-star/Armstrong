@@ -1750,7 +1750,7 @@ html[lang^="zh"] .dashboard5-theme :is(.health-matrix-head h2,.panel-head h2,.ga
 </style><style>.team-identity{font-size:13px;color:#465468;align-self:center;padding-inline:4px}body.readonly-dashboard #modeSwitch[hidden]{display:none}</style>
 <link rel="stylesheet" href="dashboard-polish.css?v=20261124-unified-title">
 <link rel="stylesheet" href="portfolio-layout.css?v=20261124-grid1">
-<link rel="stylesheet" href="design-system.css?v=20261124-saas-tokens">
+<link rel="stylesheet" href="design-system.css?v=20261124-workbench">
 </head>
 <body class="dashboard5-theme d6-style readonly-dashboard">
 <script type="application/json" id="teamBootstrap"><!--ARMSTRONG_BOOTSTRAP--></script>
@@ -1775,10 +1775,10 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
   var requestedLang=new URLSearchParams(location.search).get('lang');
   var lang=requestedLang==='en'||requestedLang==='zh'?requestedLang:(readDashboardPreference('foil_dashboard_language')||'zh');
   var en={
-    '管理层总览':'Management Overview','执行里程碑':'Execution Milestones','搜索项目、型号或负责人':'Search projects, models or owners',
+    '项目总览':'Project Overview','里程碑工作台':'Milestone Workspace','搜索项目、型号或负责人':'Search projects, models or owners',
     '项目事实、风险与等待确认事项':'Project facts, risks and pending confirmations','只读视图 · 数据由项目负责人维护':'Read-only · Maintained by project owners',
     'PM维护模式 · 修改后保存到当前浏览器':'PM edit mode · Changes saved in this browser','返回只读看板':'Back to read-only','进入 PM 维护':'Enter PM mode',
-    '进展总览':'Progress Overview','产品系列':'Product Series','尺寸/型号':'Sizes / Models','尺寸 / 型号':'Size / Model','正在推进':'In Progress',
+    '项目总览':'Project Overview','产品系列':'Product Series','尺寸/型号':'Sizes / Models','尺寸 / 型号':'Size / Model','正在推进':'In Progress',
     '等待确认中':'Pending Confirmation','延误或阻塞':'Delayed / Blocked','最长已等待':'Longest wait','本周重点':'This Week\'s Focus',
     '按延误、阻塞、待确认顺序展示':'Ordered by delay, blockage and confirmation','确认积压':'Confirmation Backlog','项等待确认':'pending confirmations',
     '最长等待':'Longest Wait','已超期事项':'Overdue Items','产品系列进展':'Product Series Progress','当前关键问题':'Current Key Issue',
@@ -1816,7 +1816,7 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
     '来源为风筝厂 11–12 月样品计划，仅展示PM已录入内容。':'Source: Kite Factory Nov–Dec sample plan. Only PM-recorded content is shown.',
     '数据基准：2026-11-18 样品计划':'Data baseline: 2026-11-18 sample plan',
     '创建产品系列并生成首个尺寸的基础记录':'Create a product series and its first size record',
-    '保存后项目会出现在左侧列表和管理层总览中；后续可进入尺寸详情继续维护状态、日期和进度。':'After saving, the project appears in the sidebar list and management overview. Open a size later to maintain its status, dates and progress.',
+    '保存后项目会出现在左侧列表和项目总览中；后续可进入尺寸详情继续维护状态、日期和进度。':'After saving, the project appears in the sidebar list and management overview. Open a size later to maintain its status, dates and progress.',
     '当前没有等待确认的事项。':'No pending confirmation items.',
     '以下节点仅属于当前尺寸；修改不会影响同系列其他尺寸。':'These milestones belong to the current size only; each size in the series has its own milestone records.',
     '进展编辑':'Progress Edit',
@@ -2077,8 +2077,8 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
   <div class="sidebar-brand"><span class="brand-mark">A+</span><div><b>Armstrong</b><small data-i18n-zh="全球产品开发" data-i18n-en="Global Product Development">全球产品开发</small></div></div>
   <nav class="sidebar-nav">
     <span class="nav-section" data-i18n-zh="工作台" data-i18n-en="WORKSPACE">工作台</span>
-    <button class="sidebar-link active" data-workspace-view="overview" onclick="setView('overview')"><i>⌂</i><span data-i18n-zh="管理层总览" data-i18n-en="Management Overview">管理层总览</span></button>
-    <button class="sidebar-link" data-workspace-view="matrix" onclick="setView('matrix')"><i>▦</i><span data-i18n-zh="执行里程碑" data-i18n-en="Execution Milestones">执行里程碑</span></button>
+    <button class="sidebar-link active" data-workspace-view="overview" onclick="setView('overview')"><i>⌂</i><span data-i18n-zh="项目总览" data-i18n-en="Project Overview">项目总览</span></button>
+    <button class="sidebar-link" data-workspace-view="matrix" onclick="setView('matrix')"><i>▦</i><span data-i18n-zh="里程碑工作台" data-i18n-en="Milestone Workspace">里程碑工作台</span></button>
     <button class="sidebar-link" data-workspace-view="reports" onclick="setView('reports')"><i>▤</i><span>日报 / 周报</span></button><div class="sidebar-search"><span>⌕</span><input id="sidebarSearch" type="search" placeholder="搜索项目、型号或负责人" data-placeholder-zh="搜索项目、型号或负责人" data-placeholder-en="Search projects, models or owners" oninput="renderSidebarProjects()"></div>
     <span class="nav-section project-nav-head"><span data-i18n-zh="产品线" data-i18n-en="PRODUCT LINES">产品线</span></span>
     <div class="sidebar-projects" id="sidebarProjects"></div>
@@ -2097,7 +2097,7 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
   </section>
   <section class="stats" id="stats"></section>
   <section class="executive-focus" id="executiveFocus"></section>
-  <div class="toolbar workspace-toolbar"><div class="tabs"><button class="tab active" data-view="overview" data-i18n-zh="进展总览" data-i18n-en="Progress Overview" onclick="setView('overview')">进展总览</button><button class="tab" data-view="matrix" data-i18n-zh="执行里程碑" data-i18n-en="Execution Milestones" onclick="setView('matrix')">执行里程碑</button><button class="tab" data-view="reports" onclick="setView('reports')">日报 / 周报</button></div><div class="workspace-filters" id="workspaceFilters"><div class="workspace-filter-field workspace-search-field"><label for="search">搜索</label><input class="search" id="search" placeholder="搜索项目、型号或负责人" data-placeholder-zh="搜索项目、型号或负责人" data-placeholder-en="Search projects, models or owners" oninput="writeDashboardPreference('foil_dashboard_search',this.value);renderDashboardResults()"></div><div class="priority-controls" id="priorityControls"><div class="workspace-filter-field"><label for="businessFilter">事业部</label><select id="businessFilter"></select></div><div class="workspace-filter-field"><label for="seriesStatusFilter">状态</label><select id="seriesStatusFilter"></select></div><div class="workspace-filter-field"><label for="priorityFilter">优先级</label><select id="priorityFilter"></select></div><div class="workspace-filter-field"><label for="prioritySort">排序方式</label><select id="prioritySort"></select></div><button class="btn workspace-reset" id="workspaceReset" type="button">清除筛选</button></div></div></div>
+  <div class="toolbar workspace-toolbar"><div class="tabs"><button class="tab active" data-view="overview" data-i18n-zh="项目总览" data-i18n-en="Project Overview" onclick="setView('overview')">项目总览</button><button class="tab" data-view="matrix" data-i18n-zh="里程碑工作台" data-i18n-en="Milestone Workspace" onclick="setView('matrix')">里程碑工作台</button><button class="tab" data-view="reports" onclick="setView('reports')">日报 / 周报</button></div><div class="workspace-filters" id="workspaceFilters"><div class="workspace-filter-field workspace-search-field"><label for="search">搜索</label><input class="search" id="search" placeholder="搜索项目、型号或负责人" data-placeholder-zh="搜索项目、型号或负责人" data-placeholder-en="Search projects, models or owners" oninput="writeDashboardPreference('foil_dashboard_search',this.value);renderDashboardResults()"></div><div class="priority-controls" id="priorityControls"><div class="workspace-filter-field"><label for="businessFilter">事业部</label><select id="businessFilter"></select></div><div class="workspace-filter-field"><label for="seriesStatusFilter">状态</label><select id="seriesStatusFilter"></select></div><div class="workspace-filter-field"><label for="priorityFilter">优先级</label><select id="priorityFilter"></select></div><div class="workspace-filter-field"><label for="prioritySort">排序方式</label><select id="prioritySort"></select></div><button class="btn workspace-reset" id="workspaceReset" type="button">清除筛选</button></div></div></div>
   <main id="main"></main>
   <div id="confirmationLoadSummary"></div>
 </div>
@@ -2176,7 +2176,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   function dashboardAction(name,args){
     return 'data-dashboard-action="'+name+'" data-dashboard-args="'+esc(JSON.stringify(args))+'"';
   }
-  var dashboardActions=new Set(['openProject','openVariant','openSample','openNewVariant','useMilestoneAsCurrent','renameProject','editProject','deleteProject','setSampleFamily','renameSampleFamily','filterConfirmations','completeApproval','setPortfolioLine','setPortfolioLayout','setSharedFilter','setMatrixLayout','setView']);
+  var dashboardActions=new Set(['openProject','openVariant','openSample','openNewVariant','useMilestoneAsCurrent','renameProject','editProject','deleteProject','setSampleFamily','renameSampleFamily','filterConfirmations','completeApproval','setPortfolioLine','setPortfolioLayout','setSharedFilter','setMatrixLayout','setView','openWorkbenchMilestone']);
   document.addEventListener('click',function(event){
     var target=event.target.closest('[data-dashboard-action]');
     if(!target||!dashboardActions.has(target.dataset.dashboardAction))return;
@@ -2712,7 +2712,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
       projectSettingsFields({priority:'高'})+
       '<div class="project-create-field"><label>产品类型</label><select data-project-field="part">'+typeOptions+'</select></div>'+
       '<div class="project-create-field"><label>首个尺寸 / 型号</label><input data-project-field="variant" placeholder="例如：85"></div>'+
-      '<div class="project-create-note">保存后项目会出现在左侧列表和管理层总览中；后续可进入尺寸详情继续维护状态、日期和进度。</div></div>';
+      '<div class="project-create-note">保存后项目会出现在左侧列表和项目总览中；后续可进入尺寸详情继续维护状态、日期和进度。</div></div>';
     reapplyLang();
     editingProject=false;
     saveButton(true,'创建项目');
@@ -2983,21 +2983,39 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
         '<td>—</td><td><span class="status '+statusClass(s.status)+'">'+esc(s.status)+'</span></td><td>'+safePercent(s.progress)+'%</td></tr>';
     }).join('');
   }
-  window.overviewHtml=function(){
-    var rows=searchSeries().map(rowHtml).concat(sampleOverviewGroups().map(sampleOverviewRow)).join('');
-    if(!rows)rows='<tr><td colspan="6" class="gate-empty">'+(window.DASHBOARD_LANG==='en'?'No matching projects':'没有符合筛选条件的项目')+'</td></tr>';
-    return '<section class="panel overview-panel workspace-section"><div class="panel-head workspace-section-head"><div><h2>产品系列进展</h2><p>选择尺寸，查看该型号的独立里程碑。</p></div><div class="legend"><span><i class="dot red"></i>延误/阻塞</span><span><i class="dot amber"></i>待确认</span><span><i class="dot green"></i>正常推进</span></div></div>'+
-      '<div class="table-shell overview-shell"><table class="overview-table"><colgroup><col><col><col><col><col><col class="overview-col-status"></colgroup><thead><tr><th>产品系列</th><th>尺寸 / 型号</th><th>当前关键问题</th><th class="overview-center">等待确认</th><th class="overview-center">下一节点</th><th class="overview-center table-status-cell">系列状态</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>'+gateBoardHtml();
+  window.overviewHtml=function(){return gateBoardHtml();};
+  var workbenchProject='',workbenchVariant='';
+  window.selectWorkbenchProject=function(value){workbenchProject=value;workbenchVariant='';renderDashboardResults();};
+  window.selectWorkbenchVariant=function(value){workbenchVariant=value;renderDashboardResults();};
+  window.openWorkbenchMilestone=function(projectId,variantName,milestoneId){
+    openVariant(projectId,variantName);
+    var field=Array.from(document.querySelectorAll('[data-variant-mile-id]')).find(function(el){return el.dataset.variantMileId===milestoneId;});
+    if(field){var group=field.closest('details');if(group)group.open=true;var article=field.closest('article');if(article)article.scrollIntoView({block:'center',behavior:'smooth'});}
   };
   window.matrixHtml=function(){
-    var series=searchSeries(),sampleGroups=sampleOverviewGroups();
-    return '<section class="panel workspace-section"><div class="panel-head workspace-section-head"><div><h2>尺寸并行矩阵</h2><p>系列共用流程只维护一次，开模、铺层、粗胚和测试按尺寸分别跟进</p></div></div><div class="matrix"><table><thead><tr><th>产品系列</th><th>尺寸 / 型号</th><th>当前里程碑</th><th>执行人 R</th><th>负责人 A</th><th>计划日期</th><th>待确认事项</th><th>状态</th><th>进度</th></tr></thead><tbody>'+
-      series.map(function(p){
-        return '<tr class="phase-row"><td colspan="9">'+esc(p.name)+' · '+p.variants.length+'个尺寸/型号 <span class="matrix-tags">'+priorityTag(p)+(projectAtRisk(p)?scheduleRisk():'')+'</span></td></tr>'+
-          p.variants.map(function(v){
-            return '<tr '+dashboardAction('openVariant',[p.id,v.name])+'><td></td><td class="variant-name">'+esc(v.name)+'</td><td>'+esc(v.node)+'</td><td>'+esc(roleLabel(v.r))+'</td><td>'+esc(roleLabel(v.a))+'</td><td>'+esc(v.due||'依前置节点')+'</td><td class="tiny">'+esc(v.approval||'—')+'</td><td><span class="status '+statusClass(v.status)+'">'+esc(v.status)+'</span></td><td>'+v.progress+'%</td></tr>';
-          }).join('');
-      }).join('')+sampleGroups.map(sampleMatrixRows).join('')+(!series.length&&!sampleGroups.length?'<tr><td class="gate-empty" colspan="9">没有符合筛选条件的项目</td></tr>':'')+'</tbody></table></div></section>';
+    var english=window.DASHBOARD_LANG==='en';
+    var families=Array.from(new Set(sampleState.map(function(s){return s.family;})));
+    var projects=seriesState.slice().sort(function(a,b){return a.name.localeCompare(b.name);});
+    var options='<option value="">'+(english?'Select a project':'请选择项目')+'</option>'+projects.map(function(p){return '<option value="p:'+esc(p.id)+'" '+(workbenchProject==='p:'+p.id?'selected':'')+'>'+esc(p.name)+'</option>';}).join('')+families.map(function(f){return '<option value="s:'+esc(f)+'" '+(workbenchProject==='s:'+f?'selected':'')+'>'+esc(f)+(english?' · Samples':' · 样品')+'</option>';}).join('');
+    var p=projects.find(function(x){return workbenchProject==='p:'+x.id;}),family=families.find(function(f){return workbenchProject==='s:'+f;});
+    var v=p&&(p.variants.find(function(x){return x.name===workbenchVariant;})||p.variants[0]);
+    if(v)workbenchVariant=v.name;
+    var selectors='<div class="workbench-selectors"><label>'+(english?'Project':'项目')+'<select onchange="selectWorkbenchProject(this.value)">'+options+'</select></label>'+(p?'<label>'+(english?'Size / Model':'尺寸 / 型号')+'<select onchange="selectWorkbenchVariant(this.value)">'+p.variants.map(function(x){return '<option value="'+esc(x.name)+'" '+(v&&x.name===v.name?'selected':'')+'>'+esc(x.name)+'</option>';}).join('')+'</select></label>':'')+'</div>';
+    var body='';
+    if(v){
+      var milestones=v.milestones||[],done=milestones.filter(function(m){return m.status==='已完成';}).length;
+      body='<div class="workbench-context"><div><h3>'+esc(p.name)+' · '+esc(v.name)+'</h3><p>'+(english?'Complete milestone sequence for this size. Other sizes are maintained independently.':'当前型号的完整节点流程；其他尺寸独立维护。')+'</p></div><span>'+done+' / '+milestones.length+(english?' completed':' 已完成')+'</span></div><div class="matrix"><table><thead><tr><th>'+(english?'Milestone':'里程碑')+'</th><th>'+(english?'Status':'状态')+'</th><th>'+(english?'Responsible R':'执行人 R')+'</th><th>'+(english?'Accountable A':'负责人 A')+'</th><th>'+(english?'Planned date':'计划日期')+'</th><th>'+(english?'Actual date':'实际日期')+'</th><th>'+(english?'Next action / Notes':'下一步 / 问题说明')+'</th><th>'+(english?'Action':'操作')+'</th></tr></thead><tbody>'+PHASES.map(function(phase){
+        var rows=milestones.filter(function(m){return m.phase===phase.id;});
+        if(!rows.length)return '';
+        return '<tr class="phase-row"><td colspan="8">'+esc(t(phase.name))+'</td></tr>'+rows.map(function(m){
+          return '<tr><td><b>'+esc(t(m.name))+'</b>'+(m.rule?'<div class="meta">'+esc(t(m.rule))+'</div>':'')+'</td><td><span class="status '+statusClass(m.status)+'">'+esc(t(m.status))+'</span></td><td>'+esc(roleLabel(m.r)||'—')+'</td><td>'+esc(roleLabel(m.a)||'—')+'</td><td>'+esc(m.due||'—')+'</td><td>'+esc(m.actual||'—')+'</td><td>'+esc(m.next||'—')+'</td><td><button type="button" class="series-detail-link" '+dashboardAction('openWorkbenchMilestone',[p.id,v.name,m.id])+'>'+(READ_ONLY?(english?'View':'查看'):(english?'Edit':'编辑'))+'</button></td></tr>';
+        }).join('');
+      }).join('')+(milestones.length?'':'<tr><td colspan="8">'+(english?'No milestones configured for this size.':'该尺寸暂无里程碑。')+'</td></tr>')+'</tbody></table></div>';
+    }else if(family){
+      var samples=sampleState.filter(function(s){return s.family===family;});
+      body='<div class="workbench-context"><div><h3>'+esc(family)+'</h3><p>'+(english?'Samples are tracked by drawing and production status; no milestone sequence is inferred.':'样品按图档与生产状态跟进，不套用水翼里程碑流程。')+'</p></div></div><div class="sample-table-wrap"><table class="workbench-samples"><thead><tr>'+['尺寸 / 版本','图档计划','生产进展','负责人','承诺日期','状态','操作'].map(function(label){return '<th>'+esc(t(label))+'</th>';}).join('')+'</tr></thead><tbody>'+samples.map(function(s){return '<tr><td>'+esc(s.sample)+'</td><td>'+esc(s.drawing||'—')+'</td><td>'+esc(s.production||'—')+'</td><td>'+esc(s.owner||'—')+'</td><td>'+esc(s.due||'—')+'</td><td><span class="status '+statusClass(s.status)+'">'+esc(t(s.status))+'</span></td><td><button type="button" class="series-detail-link" '+dashboardAction('openSample',[s.id])+'>'+(READ_ONLY?(english?'View':'查看'):(english?'Edit':'编辑'))+'</button></td></tr>';}).join('')+'</tbody></table></div>';
+    }else body='<div class="workbench-empty"><h3>'+(english?'Select a project to begin':'先选择要跟进的项目')+'</h3><p>'+(english?'Then choose a size to review its complete milestone sequence.':'选择项目和型号后，这里会显示该型号的全部里程碑。')+'</p></div>';
+    return '<section class="panel workspace-section milestone-workbench"><div class="panel-head workspace-section-head"><div><h2>'+(english?'Milestone Workspace':'里程碑工作台')+'</h2><p>'+(READ_ONLY?(english?'Review owners, dates, status and next actions by size.':'按型号查看完整流程、负责人、日期和下一步动作。'):(english?'Select a project and size, then edit a milestone to update shared progress.':'选择项目和型号，点击节点“编辑”更新共享进展。'))+'</p></div></div>'+selectors+body+'</section>';
   };
   function approvalCards(p){
     var english=window.DASHBOARD_LANG==='en',pending=[],completed=[];
@@ -3719,8 +3737,8 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     renderSidebarProjects();
     var overview=view==='overview'||view==='matrix';
     document.getElementById('priorityControls').hidden=!overview;
-    document.getElementById('workspaceFilters').hidden=view==='reports';
-    document.getElementById('stats').hidden=!overview;
+    document.getElementById('workspaceFilters').hidden=view!=='overview';
+    document.getElementById('stats').hidden=view!=='overview';
     var focusEl=document.getElementById('executiveFocus');
     if(focusEl)focusEl.hidden=view!=='overview';
     document.getElementById('confirmationLoadSummary').hidden=view!=='overview';
