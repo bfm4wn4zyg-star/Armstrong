@@ -1751,6 +1751,7 @@ html[lang^="zh"] .dashboard5-theme :is(.health-matrix-head h2,.panel-head h2,.ga
 <link rel="stylesheet" href="dashboard-polish.css?v=20261124-unified-title">
 <link rel="stylesheet" href="portfolio-layout.css?v=20261124-grid1">
 <link rel="stylesheet" href="design-system.css?v=20261124-sidebar-actions">
+<link rel="stylesheet" href="nimblify-system.css?v=20261124-integrated1">
 </head>
 <body class="dashboard5-theme d6-style readonly-dashboard">
 <script type="application/json" id="teamBootstrap"><!--ARMSTRONG_BOOTSTRAP--></script>
@@ -1775,6 +1776,26 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
   var requestedLang=new URLSearchParams(location.search).get('lang');
   var lang=requestedLang==='en'||requestedLang==='zh'?requestedLang:(readDashboardPreference('foil_dashboard_language')||'zh');
   var en={
+    '全部项目':'All projects',
+    '网格':'Grid',
+    '列表':'List',
+    '全部日期':'All dates',
+    '更新开始日期':'Updated from',
+    '更新结束日期':'Updated through',
+    '只筛选项目卡片；未记录更新日期的项目不包含在日期范围内。':'Filters project cards only. Projects without an update date are excluded from a selected date range.',
+    '请选择有效日期范围。':'Choose a valid date range.',
+    '尚无更新日期':'No update date recorded',
+    '更新日期':'Updated',
+    '今日更新':'Updated today',
+    '{count} 天前更新':'Updated {count} days ago',
+    '{affected} / {total} 个型号受影响':'{affected} / {total} models affected',
+    '个项目':'projects',
+    '样品计划':'Sample plan',
+    '没有符合筛选条件的项目，请调整筛选。':'No matching projects. Adjust the filters to see more.',
+    '追踪项目进度，识别风险，让团队的每一步清晰可见。':'Track project progress, identify risks, and keep every step in view.',
+    '按型号查看完整流程、负责人、日期和下一步动作。':'Review the complete milestone sequence, owners, dates and next actions by model.',
+    '按日期汇总进展、风险与待确认事项。':'Review progress, risks and confirmations for the selected dates.',
+    '按图档与生产状态跟进各尺寸样品。':'Track drawings and production status for each sample size.',
     '项目总览':'Project Overview','里程碑工作台':'Milestone Workspace','搜索项目、型号或负责人':'Search projects, models or owners',
     '项目事实、风险与等待确认事项':'Project facts, risks and pending confirmations','只读视图 · 数据由项目负责人维护':'Read-only · Maintained by project owners',
     'PM维护模式 · 修改后保存到当前浏览器':'PM edit mode · Changes saved in this browser','返回只读看板':'Back to read-only','进入 PM 维护':'Enter PM mode',
@@ -1802,7 +1823,7 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
     '需要立即处理':'Immediate Attention','本周样品节点':'Sample Milestones This Week','打开项目详情':'Open Project Details','展示最需要推动的4个卡点':'Top 4 items requiring action',
     '目标日期':'Target Date','目标':'Target','责任人':'Owner','当前负责人':'Current Owner','按计划推进':'On schedule','需要尽快处理':'Needs immediate action',
     '影响后续节点安排':'Impacts downstream milestones','等待管理确认后继续推进':'Awaiting management confirmation',
-    '项目健康度总览':'Portfolio Health Overview','按延误、待确认和正常推进排序，一眼查看全部产品系列':'Sorted by delay, pending confirmation and on-track status','今日关键瓶颈':'Key Bottleneck Today',
+    '项目健康度总览':'Project Health Overview','按延误、待确认和正常推进排序，一眼查看全部产品系列':'Sorted by delay, pending confirmation and on-track status','今日关键瓶颈':'Key Bottleneck Today',
     '阶段':'Phase','时间规则':'Timing Rule','关联打样任务':'Related Sample Tasks','暂无':'None','暂无关联样品':'No related samples',
     '产品系列 / 范围':'Product Series / Scope','暂无待确认':'None pending','依前置节点':'Per prerequisite milestone',
     '仅展示PM录入的问题、负责人、日期与影响；超期状态按需要日期直接标记':'Only PM-recorded issues, owners, dates and impacts are shown; overdue is marked by required date',
@@ -2074,7 +2095,7 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
 </script>
 <div class="dashboard-shell">
 <aside class="app-sidebar">
-  <div class="sidebar-brand"><span class="brand-mark">A+</span><div><b>Armstrong</b><small data-i18n-zh="全球产品开发" data-i18n-en="Global Product Development">全球产品开发</small></div></div>
+  <div class="sidebar-brand"><span class="brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="armstrongBrand" x2="1" y2="1"><stop stop-color="#00c2ff"/><stop offset=".55" stop-color="#2463ff"/><stop offset="1" stop-color="#b249ff"/></linearGradient></defs><path d="m1 17 10-12 10 12-10 12Z" fill="url(#armstrongBrand)"/><path d="m18 17 10-12 10 12-10 12Z" fill="url(#armstrongBrand)"/></svg></span><div><b>Armstrong</b><small data-i18n-zh="全球产品开发" data-i18n-en="Global Product Development">全球产品开发</small></div></div>
   <nav class="sidebar-nav">
     <span class="nav-section" data-i18n-zh="工作台" data-i18n-en="WORKSPACE">工作台</span>
     <button class="sidebar-link active" data-workspace-view="overview" onclick="setView('overview')"><i>⌂</i><span data-i18n-zh="项目总览" data-i18n-en="Project Overview">项目总览</span></button>
@@ -2087,22 +2108,22 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
     <details id="sidebarActions" class="sidebar-actions" open><summary title="操作 / Actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="white"/><circle cx="15" cy="17" r="3" fill="white"/></svg><span data-i18n-zh="操作与偏好" data-i18n-en="Actions & preferences">操作与偏好</span></summary>
   <div class="dashboard-utility" id="dashboardUtility"><div class="actions"><div class="language-switch" role="group" aria-label="Language"><button type="button" data-lang="zh" onclick="setDashboardLanguage('zh')">中文</button><button type="button" data-lang="en" onclick="setDashboardLanguage('en')">EN</button></div><button class="btn" id="reviewSnapshotExport" type="button" hidden data-i18n-zh="导出评审数据" data-i18n-en="Export review data">导出评审数据</button><span id="teamIdentity" class="team-identity"></span><button id="teamLogout" class="btn" type="button" data-i18n-zh="退出登录" data-i18n-en="Sign out">退出登录</button><button class="btn presentation-home" id="presentationHome" type="button" hidden>返回总览</button><button class="btn presentation-toggle" id="presentationToggle" type="button" aria-pressed="false">演示模式</button><button class="btn mode-switch" id="modeSwitch" type="button"></button></div></div>
     </details>
-  <div class="sidebar-foot"><span>AF</span><div><b data-i18n-zh="Armstrong 团队" data-i18n-en="Armstrong Team">Armstrong 团队</b><small data-i18n-zh="产品开发" data-i18n-en="Product Development">产品开发</small></div></div>
+  <div class="sidebar-foot"><span>ϟ</span><div><b data-i18n-zh="让每一步进展清晰可见" data-i18n-en="Keep every step in view">让每一步进展清晰可见</b><small data-i18n-zh="聚焦风险，协同推进。" data-i18n-en="Spot risks. Move forward together.">聚焦风险，协同推进。</small><button type="button" class="sidebar-overview" onclick="setView('overview')" data-i18n-zh="查看项目总览" data-i18n-en="View project overview">查看项目总览</button></div></div>
   </div>
 </aside>
 <div class="dashboard-stage">
-  <nav class="dashboard-topbar"><div class="breadcrumb"><button type="button" class="sidebar-collapse-toggle" id="sidebarCollapseToggle" onclick="toggleDashboardSidebar()" aria-label="收起侧边栏" aria-expanded="true"><span></span><span></span><span></span></button><span>▣</span><b data-i18n-zh="看板" data-i18n-en="Dashboard">看板</b></div><div class="topbar-meta"><span data-i18n-zh="最后更新 · 2026年11月20日" data-i18n-en="Last updated · 20 Nov 2026">最后更新 · 2026年11月20日</span><i>A</i><i>N</i><i>T</i></div></nav>
+  <nav class="dashboard-topbar"><button type="button" class="sidebar-collapse-toggle" id="sidebarCollapseToggle" onclick="toggleDashboardSidebar()" aria-label="收起侧边栏" aria-expanded="true"><span></span><span></span><span></span></button><label class="global-search" for="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6"/></svg><input class="search" id="search" type="search" aria-label="搜索项目、型号或负责人" placeholder="搜索项目、型号或负责人" data-placeholder-zh="搜索项目、型号或负责人" data-placeholder-en="Search projects, models or owners" oninput="searchDashboardProjects(this.value)"></label><div class="workspace-account"><button type="button" class="pending-shortcut" onclick="applyDashboardFilter('waiting')" title="等待确认中" aria-label="等待确认中"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 17h14l-2-4V8a5 5 0 0 0-10 0v5l-2 4ZM9 20h6M11 2h2"/></svg><span id="pendingBadge" hidden></span></button><span class="workspace-avatar" id="workspaceAvatar">AF</span><div class="workspace-account-copy"><b id="workspaceAccountName"></b><small id="workspaceAccountRole"></small></div></div></nav>
 <div class="app">
   <section class="dashboard-hero">
   <header class="header">
-     <div><h1 data-i18n-zh="新品开发进度" data-i18n-en="Development Progress">新品开发进度</h1><p id="d6Headline" class="d6-headline"></p></div>
+     <div><h1 id="workspaceTitle">项目健康度总览</h1><p id="workspaceSubtitle">追踪项目进度，识别风险，让团队的每一步清晰可见。</p><p id="d6Headline" class="d6-headline"></p></div><div class="workspace-head-actions"><button type="button" id="workspaceNewProject" class="btn" onclick="openNewProject()" hidden><span aria-hidden="true">＋</span><span data-i18n-zh="新建项目" data-i18n-en="New project">新建项目</span></button></div>
   </header>
-  <div id="mobileUtilitySlot"></div>
+  <div id="mobileUtilitySlot"><details id="mobileActions" class="mobile-actions"><summary data-i18n-zh="操作与偏好" data-i18n-en="Actions & preferences">操作与偏好</summary></details></div>
   <script>(function(){var b=document.getElementById('modeSwitch'),t=window.dashboardText;if(TEAM.role==='viewer'){b.hidden=true;return;}if(window.DASHBOARD_PM_MODE){b.textContent=t('返回只读看板');b.onclick=function(){switchDashboardMode(false);};}else{b.textContent=t('进入 PM 维护');b.onclick=function(){switchDashboardMode(true);};}})();</script>
   </section>
-  <section class="stats" id="stats"></section>
+  <div class="toolbar workspace-toolbar"><div class="tabs"><button class="tab active" data-view="overview" data-i18n-zh="项目总览" data-i18n-en="Project Overview" onclick="setView('overview')">项目总览</button><button class="tab" data-view="matrix" data-i18n-zh="里程碑工作台" data-i18n-en="Milestone Workspace" onclick="setView('matrix')">里程碑工作台</button><button class="tab" data-view="reports" onclick="setView('reports')">日报 / 周报</button></div><div class="workspace-filters" id="workspaceFilters"><div class="priority-controls" id="priorityControls"><div class="workspace-filter-field"><label for="businessFilter">事业部</label><select id="businessFilter"></select></div><div class="workspace-filter-field"><label for="seriesStatusFilter">状态</label><select id="seriesStatusFilter"></select></div><div class="workspace-filter-field"><label for="priorityFilter">优先级</label><select id="priorityFilter"></select></div><div class="workspace-filter-field"><label for="prioritySort">排序方式</label><select id="prioritySort"></select></div><button class="btn workspace-reset" id="workspaceReset" type="button">清除筛选</button></div></div></div>
   <section class="executive-focus" id="executiveFocus"></section>
-  <div class="toolbar workspace-toolbar"><div class="tabs"><button class="tab active" data-view="overview" data-i18n-zh="项目总览" data-i18n-en="Project Overview" onclick="setView('overview')">项目总览</button><button class="tab" data-view="matrix" data-i18n-zh="里程碑工作台" data-i18n-en="Milestone Workspace" onclick="setView('matrix')">里程碑工作台</button><button class="tab" data-view="reports" onclick="setView('reports')">日报 / 周报</button></div><div class="workspace-filters" id="workspaceFilters"><div class="workspace-filter-field workspace-search-field"><label for="search">搜索</label><input class="search" id="search" placeholder="搜索项目、型号或负责人" data-placeholder-zh="搜索项目、型号或负责人" data-placeholder-en="Search projects, models or owners" oninput="writeDashboardPreference('foil_dashboard_search',this.value);renderDashboardResults()"></div><div class="priority-controls" id="priorityControls"><div class="workspace-filter-field"><label for="businessFilter">事业部</label><select id="businessFilter"></select></div><div class="workspace-filter-field"><label for="seriesStatusFilter">状态</label><select id="seriesStatusFilter"></select></div><div class="workspace-filter-field"><label for="priorityFilter">优先级</label><select id="priorityFilter"></select></div><div class="workspace-filter-field"><label for="prioritySort">排序方式</label><select id="prioritySort"></select></div><button class="btn workspace-reset" id="workspaceReset" type="button">清除筛选</button></div></div></div>
+  <section class="global-snapshot" id="globalSnapshot"><div class="snapshot-caption"><h2 data-i18n-zh="全局项目概况" data-i18n-en="Workspace snapshot">全局项目概况</h2><span data-i18n-zh="全部数据 · 不受搜索筛选影响" data-i18n-en="All data · independent of search and filters">全部数据 · 不受搜索筛选影响</span></div><section class="stats" id="stats"></section></section>
   <main id="main"></main>
   <div id="confirmationLoadSummary"></div>
 </div>
@@ -2826,7 +2847,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   }
 
   function syncOverviewTabs(){
-    document.querySelectorAll('.tab,[data-workspace-view]').forEach(function(x){x.classList.toggle('active',(x.dataset.view||x.dataset.workspaceView)===view);});
+    document.querySelectorAll('.tab,[data-workspace-view]').forEach(function(x){var id=x.dataset.view||x.dataset.workspaceView;x.classList.toggle('active',id===view);var label={overview:'项目总览',matrix:'里程碑工作台',reports:'日报 / 周报'}[id];if(label)x.setAttribute('aria-label',t(label));});
   }
   window.applyDashboardFilter=function(filter){
     setWorkspaceFilter(statusSelect,'');
@@ -2871,6 +2892,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
       [risk,'延误或阻塞','blocked','danger',d6MetricText('{count} 个型号延误或阻塞',{count:models.filter(function(m){return isRisk(m.status);}).length})]
     ];
     document.getElementById('stats').innerHTML=metrics.map(function(metric){return overviewMetric.apply(null,metric);}).join('');
+    var pendingBadge=document.getElementById('pendingBadge');pendingBadge.hidden=!pending.length;pendingBadge.textContent=pending.length;
     document.getElementById('d6Headline').textContent=d6MetricText('{active} 个系列未完成 · {pending} 项待确认 · {risk} 个系列延误或阻塞',{active:active,pending:pending.length,risk:risk});
   };
   function confirmationLoadHtml(){
@@ -2919,39 +2941,61 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   window.refreshPortfolioScrollControls=function(){document.querySelectorAll('.portfolio-scroll-shell').forEach(function(shell){window.updatePortfolioScroll(shell);window.bindPortfolioDrag(shell.querySelector('.portfolio-line-grid'));});};
   if(window.addEventListener)window.addEventListener('resize',function(){window.refreshPortfolioScrollControls();});
   var portfolioLayout='grid';
+  var portfolioDateStart='',portfolioDateEnd='';
+  function portfolioDateFilterHtml(){
+    var label=portfolioDateStart||portfolioDateEnd?(portfolioDateStart||'…')+' – '+(portfolioDateEnd||'…'):t('全部日期');
+    return '<details class="shared-filter portfolio-date-filter'+(portfolioDateStart||portfolioDateEnd?' active':'')+'"><summary>'+esc(t('更新日期'))+'<span>'+esc(label)+'</span></summary><div class="shared-filter-menu portfolio-date-menu"><label>'+esc(t('更新开始日期'))+'<input type="date" id="portfolioDateStart" value="'+portfolioDateStart+'"></label><label>'+esc(t('更新结束日期'))+'<input type="date" id="portfolioDateEnd" value="'+portfolioDateEnd+'"></label><p>'+esc(t('只筛选项目卡片；未记录更新日期的项目不包含在日期范围内。'))+'</p><button type="button" class="btn primary" onclick="applyPortfolioDates()">'+esc(t('应用日期'))+'</button></div></details>';
+  }
+  window.applyPortfolioDates=function(){
+    var start=document.getElementById('portfolioDateStart').value,end=document.getElementById('portfolioDateEnd').value;
+    if(start&&calendarDay(start)===null||end&&calendarDay(end)===null||start&&end&&start>end){alert(t('请选择有效日期范围。'));return;}
+    portfolioDateStart=start;portfolioDateEnd=end;renderDashboardResults();
+  };
   window.setPortfolioLine=function(id){
     document.getElementById('businessFilter').value=id;
     document.getElementById('businessFilter').dispatchEvent(new Event('change'));
   };
   window.setPortfolioLayout=function(layout){portfolioLayout=layout==='list'?'list':'grid';renderExecutiveFocus();reapplyLang();};
+  function portfolioDateLabel(value){
+    var day=calendarDay(value),today=calendarDay(localDateString());
+    if(day===null)return t('尚无更新日期');
+    if(day>today)return t('更新日期')+' · '+value;
+    var days=today-day;
+    return days===0?t('今日更新'):t('{count} 天前更新').replace('{count}',days);
+  }
+  function portfolioIllustration(line){
+    var colors=line==='boardwing'?['#a08beb','#eee6ff','#7859c9']:line==='accessories'?['#74d2b7','#def5ea','#269f82']:['#7cb5fa','#e0efff','#3087dc'];
+    var main=colors[0],bg=colors[1],dark=colors[2];
+    var shape=line==='boardwing'?'<path d="M6 34Q31-2 58 34L32 47Z" fill="'+main+'"/><path d="M7 34q25-13 50 0M32 11v36" fill="none" stroke="white" stroke-width="2"/><path d="m20 41 10 15 14-15" fill="none" stroke="'+dark+'" stroke-width="1.6"/>':line==='accessories'?'<path d="m9 22 23-12 23 12v26L32 60 9 48Z" fill="'+main+'"/><path d="m9 22 23 12 23-12M32 34v26M21 16l23 12" fill="none" stroke="white" stroke-width="2"/><path d="m32 34 23-12v26L32 60Z" fill="'+dark+'" opacity=".4"/>':'<path d="M8 40q16-10 46-4-19 15-40 8Z" fill="'+main+'"/><path d="m32 14-2 25h6l-1-25Z" fill="'+dark+'"/><path d="M18 17q15-9 34 0L34 23Z" fill="'+main+'"/><path d="M14 47q22 8 43-2" fill="none" stroke="'+dark+'" stroke-width="2"/>';
+    return '<svg viewBox="0 0 66 70" aria-hidden="true"><ellipse cx="33" cy="59" rx="28" ry="7" fill="'+dark+'" opacity=".12"/><path d="M4 35Q-2 17 16 16T43 8q20 1 17 19t2 18Q59 64 39 61T9 55Z" fill="'+bg+'"/>'+shape+'</svg>';
+  }
   window.renderExecutiveFocus=function(){
     var english=window.DASHBOARD_LANG==='en';
     var rank={'阻塞':0,'已延误':0,'待确认':1,'待图档':1,'待排期':1,'进行中':2,'未开始':2,'已完成':3};
     var items=searchSeries().map(function(p){
       var line=BUSINESS_LINES.find(function(l){return businessLineMatches(l.id,p.businessLine);})||BUSINESS_LINES[0];
-      return {id:p.id,kind:'project',name:p.name,owner:p.owner,line:line,status:seriesStatus(p),priority:p.priority,progress:seriesProgress(p),affected:affectedVariantCount(p),total:p.variants.length};
+      return {id:p.id,kind:'project',name:p.name,owner:p.owner,line:line,status:seriesStatus(p),priority:p.priority,progress:seriesProgress(p),affected:affectedVariantCount(p),total:p.variants.length,updated:p.updated,part:p.part};
     });
     sampleOverviewGroups().forEach(function(entry){
       var owners=Array.from(new Set(entry[1].map(function(s){return s.owner;}).filter(Boolean)));
-      items.push({id:entry[0],kind:'sample',name:entry[0],owner:owners.join(' / '),line:BUSINESS_LINES.find(function(l){return l.id==='boardwing';}),status:sampleFamilyStatus(entry[0]),progress:sampleFamilyProgress(entry[0]),affected:affectedSampleCount(entry[0]),total:entry[1].length});
+      var dates=entry[1].map(function(s){return s.updated;}).filter(function(value){return calendarDay(value)!==null;}).sort(function(a,b){return calendarDay(b)-calendarDay(a);});
+      items.push({id:entry[0],kind:'sample',name:entry[0],owner:owners.join(' / '),line:BUSINESS_LINES.find(function(l){return l.id==='boardwing';}),status:sampleFamilyStatus(entry[0]),progress:sampleFamilyProgress(entry[0]),affected:affectedSampleCount(entry[0]),total:entry[1].length,updated:dates[0]||'',part:t('样品计划')});
     });
+    if(portfolioDateStart||portfolioDateEnd)items=items.filter(function(item){var day=calendarDay(item.updated);return day!==null&&(!portfolioDateStart||day>=calendarDay(portfolioDateStart))&&(!portfolioDateEnd||day<=calendarDay(portfolioDateEnd));});
     items.sort(function(a,b){return (prioritySort?comparePriority(a,b):0)||(rank[a.status]===undefined?9:rank[a.status])-(rank[b.status]===undefined?9:rank[b.status])||a.name.localeCompare(b.name);});
-    var tabs=[{id:'',name:'全部项目',en:'All projects'}].concat(BUSINESS_LINES).map(function(line){
-      return '<button type="button" class="portfolio-tab '+(lineFilter===line.id?'active':'')+'" aria-pressed="'+(lineFilter===line.id)+'" '+dashboardAction('setPortfolioLine',[line.id])+'>'+esc(english?line.en:line.name)+'</button>';
+    var tabs=['','进行中','待确认','已延误','阻塞','未开始','已完成'].map(function(status){
+      return '<button type="button" class="portfolio-tab '+(statusFilter===status?'active':'')+'" aria-pressed="'+(statusFilter===status)+'" '+dashboardAction('setSharedFilter',['seriesStatusFilter',status])+'>'+esc(t(status||'全部项目'))+'</button>';
     }).join('');
-    var icon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v9l9 5 9-5V8M12 13v9M7.5 5.5l9 5"/></svg>';
+    var clock='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 5v5l3 2"/></svg>';
     var cards=items.map(function(item){
-      var tone=item.status==='阻塞'||item.status==='已延误'?'danger':item.status==='待确认'||item.status==='待图档'||item.status==='待排期'?'warning':'good';
+      var tone=item.status==='阻塞'||item.status==='已延误'?'danger':item.status==='待确认'||item.status==='待图档'||item.status==='待排期'||item.status==='暂停'?'warning':item.status==='未开始'?'neutral':'good';
       var progress=Math.max(0,Math.min(100,Number(item.progress)||0));
       var action=dashboardAction(item.kind==='sample'?'setSampleFamily':'openProject',[item.id]);
-      var impact=item.affected+' / '+item.total+(english?' models affected':' 个型号受影响');
-      return '<button type="button" class="portfolio-project '+tone+'" '+action+' title="'+esc(item.name)+'"><span class="portfolio-card-top"><span class="portfolio-icon '+esc(item.line.id)+'">'+icon+'</span><span class="portfolio-status '+statusClass(item.status)+'">'+esc(item.status)+'</span></span><span class="portfolio-project-name">'+esc(item.name)+'</span><span class="portfolio-percent">'+progress+'%</span><span class="portfolio-track" role="meter" aria-label="'+esc(item.name)+'" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'"><i style="width:'+progress+'%"></i></span><span class="portfolio-project-meta"><span class="portfolio-owner" title="'+esc(item.owner||'—')+'">'+(english?'Owner: ':'负责人：')+esc(item.owner||'—')+'</span><span>'+esc(impact)+'</span><span class="portfolio-category">'+esc(english?item.line.en:item.line.name)+'</span></span></button>';
+      var impact=t('{affected} / {total} 个型号受影响').replace('{affected}',item.affected).replace('{total}',item.total);
+      var owner=t('负责人')+'：'+(item.owner||'—');
+      return '<button type="button" class="portfolio-project '+tone+'" '+action+' title="'+esc(item.name)+'"><span class="portfolio-status '+statusClass(item.status)+'">'+esc(t(item.status))+'</span><span class="portfolio-illustration">'+portfolioIllustration(item.line.id)+'</span><span class="portfolio-project-info"><span class="portfolio-project-name">'+esc(item.name)+'</span><span class="portfolio-project-subtitle">'+esc(t(item.part))+' · '+esc(english?item.line.en:item.line.name)+'</span></span><span class="portfolio-percent">'+progress+'%</span><span class="portfolio-track" role="meter" aria-label="'+esc(item.name)+'" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'"><i style="width:'+progress+'%"></i></span><span class="portfolio-project-meta" title="'+esc(owner+' · '+impact)+'"><span class="portfolio-owner">'+esc(owner)+'</span><span>'+esc(impact)+'</span></span><span class="portfolio-updated">'+clock+'<span>'+esc(portfolioDateLabel(item.updated))+'</span>'+(item.priority?priorityTag(item):'')+'</span></button>';
     }).join('');
-    var delayed=items.filter(function(x){return x.status==='已延误';}).length;
-    var blocked=items.filter(function(x){return x.status==='阻塞';}).length;
-    var affected=items.reduce(function(n,x){return n+x.affected;},0);
-    var summary=english?'Current selection · recorded status':'当前筛选范围 · 按已录入状态统计';
-    document.getElementById('executiveFocus').innerHTML='<section class="portfolio-board"><div class="portfolio-board-heading"><div><h2>'+(english?'Project Health Overview':'项目健康度总览')+'</h2><p>'+(english?'Track progress, identify risks, and review each project.':'追踪项目进度，识别风险，查看各型号的独立进展。')+'</p></div></div><div class="portfolio-controls"><div class="portfolio-tabs" role="group" aria-label="'+(english?'Product lines':'事业部筛选')+'">'+tabs+'</div><div class="portfolio-view-controls"><span>'+items.length+(english?' projects':' 个项目')+'</span><button type="button" aria-pressed="'+(portfolioLayout==='grid')+'" '+dashboardAction('setPortfolioLayout',['grid'])+'>'+(english?'Grid':'网格')+'</button><button type="button" aria-pressed="'+(portfolioLayout==='list')+'" '+dashboardAction('setPortfolioLayout',['list'])+'>'+(english?'List':'列表')+'</button></div></div><div class="portfolio-project-grid '+(portfolioLayout==='list'?'is-list':'')+'">'+(cards||'<p class="portfolio-empty">'+(english?'No matching projects. Adjust the filters to see more.':'没有符合筛选条件的项目，请调整筛选。')+'</p>')+'</div><div class="portfolio-insights"><div class="portfolio-insight-intro"><b>'+(english?'Project summary':'项目概况')+'</b><span>'+summary+'</span></div><div><b>'+items.length+'</b><span>'+(english?'Projects':'项目总数')+'</span></div><div><b>'+delayed+'</b><span>'+(english?'Delayed':'已延误')+'</span></div><div><b>'+blocked+'</b><span>'+(english?'Blocked':'阻塞')+'</span></div><div><b>'+affected+'</b><span>'+(english?'Affected models':'受影响型号')+'</span></div><button type="button" class="btn primary" '+dashboardAction('setView',['reports'])+'>'+(english?'View report':'查看报告')+'</button></div></section>';
+    document.getElementById('executiveFocus').innerHTML='<section class="portfolio-board"><div class="portfolio-controls"><div class="portfolio-tabs" role="group" aria-label="'+esc(t('状态'))+'">'+tabs+'</div><div class="portfolio-view-controls"><span>'+items.length+' '+esc(t('个项目'))+'</span><button type="button" aria-pressed="'+(portfolioLayout==='grid')+'" '+dashboardAction('setPortfolioLayout',['grid'])+'>'+esc(t('网格'))+'</button><button type="button" aria-pressed="'+(portfolioLayout==='list')+'" '+dashboardAction('setPortfolioLayout',['list'])+'>'+esc(t('列表'))+'</button></div></div><div class="portfolio-project-grid '+(portfolioLayout==='list'?'is-list':'')+'">'+(cards||'<p class="portfolio-empty">'+esc(t('没有符合筛选条件的项目，请调整筛选。'))+'</p>')+'</div></section>';
     document.getElementById('confirmationLoadSummary').innerHTML=confirmationLoadHtml();
   };
   function sampleOverviewGroups(){
@@ -3539,6 +3583,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     dashboardFilter='all';gateApproverFilter='';gateSeriesFilter='';render();
   });
   document.getElementById('workspaceReset').addEventListener('click',function(){
+    portfolioDateStart='';portfolioDateEnd='';
     setWorkspaceFilter(lineSelect,'');setWorkspaceFilter(statusSelect,'');
     prioritySelect.value='';priorityFilter='';writeDashboardPreference('foil_dashboard_priority_filter','');
     document.getElementById('search').value='';writeDashboardPreference('foil_dashboard_search','');
@@ -3703,7 +3748,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
       var select=document.getElementById(id),label=document.querySelector('label[for="'+id+'"]');
       var selected=select.options[select.selectedIndex];
       return '<details class="shared-filter'+(select.selectedIndex>0?' active':'')+'"><summary>'+esc(label?label.textContent:'')+'<span>'+esc(selected?selected.textContent:'')+'</span></summary><div class="shared-filter-menu">'+Array.from(select.options).map(function(option){return '<button type="button" aria-pressed="'+option.selected+'" '+dashboardAction('setSharedFilter',[id,option.value])+'>'+esc(option.textContent)+'</button>';}).join('')+'</div></details>';
-    }).join('')+'<button type="button" class="btn ghost" onclick="document.getElementById(\'workspaceReset\').click()">'+(english?'Clear filters':'清除筛选')+'</button>';
+    }).join('')+portfolioDateFilterHtml()+'<button type="button" class="btn ghost" onclick="document.getElementById(\'workspaceReset\').click()">'+(english?'Clear filters':'清除筛选')+'</button>';
   }
   function decorateSharedTables(){
     document.querySelectorAll('.matrix-view-tools').forEach(function(tools){tools.remove();});
@@ -3730,8 +3775,20 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   window.setView=function(v){
     view=v;dashboardFilter='all';gateApproverFilter='';gateSeriesFilter='';syncOverviewTabs();render();
   };
+  window.searchDashboardProjects=function(value){
+    writeDashboardPreference('foil_dashboard_search',value);
+    if(view!=='overview'){view='overview';syncOverviewTabs();render();}
+    else renderDashboardResults();
+  };
   new MutationObserver(function(){decorateSharedTables();}).observe(document.getElementById('drawerBody'),{childList:true,subtree:true});
   window.renderDashboardResults=function(){
+    document.body.dataset.workspaceView=view;
+    syncOverviewTabs();
+    var headings={overview:['项目健康度总览','追踪项目进度，识别风险，让团队的每一步清晰可见。'],matrix:['里程碑工作台','按型号查看完整流程、负责人、日期和下一步动作。'],reports:['日报 / 周报','按日期汇总进展、风险与待确认事项。'],samples:['样品计划','按图档与生产状态跟进各尺寸样品。']};
+    var heading=headings[view]||headings.overview;
+    document.getElementById('workspaceTitle').textContent=t(heading[0]);
+    document.getElementById('workspaceSubtitle').textContent=t(heading[1]);
+    document.getElementById('workspaceNewProject').hidden=view!=='overview'||!canManageProjects();
     if(view==='overview')renderExecutiveFocus();
     main.innerHTML=view==='samples'?samplePlanHtml():view==='matrix'?matrixHtml():view==='reports'?reportsHtml():overviewHtml();
     reapplyLang();
@@ -3744,6 +3801,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     document.getElementById('priorityControls').hidden=!overview;
     document.getElementById('workspaceFilters').hidden=view!=='overview';
     document.getElementById('stats').hidden=view!=='overview';
+    document.getElementById('globalSnapshot').hidden=view!=='overview';
     var focusEl=document.getElementById('executiveFocus');
     if(focusEl)focusEl.hidden=view!=='overview';
     document.getElementById('confirmationLoadSummary').hidden=view!=='overview';
@@ -3828,6 +3886,11 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   var teamIdentity=document.getElementById('teamIdentity');
   var teamRoles={viewer:['只读','Viewer'],pm:['项目维护','Project Manager'],admin:['管理员','Administrator']};
   var teamRole=teamRoles[TEAM.role];
+  document.getElementById('workspaceAccountName').textContent=TEAM.name;
+  document.getElementById('workspaceAccountRole').dataset.i18nZh=teamRole[0];
+  document.getElementById('workspaceAccountRole').dataset.i18nEn=teamRole[1];
+  document.getElementById('workspaceAccountRole').textContent=window.DASHBOARD_LANG==='en'?teamRole[1]:teamRole[0];
+  document.getElementById('workspaceAvatar').textContent=String(TEAM.name||'AF').slice(0,2).toUpperCase();
   teamIdentity.dataset.i18nZh=TEAM.name+' · '+teamRole[0];
   teamIdentity.dataset.i18nEn=TEAM.name+' · '+teamRole[1];
   teamIdentity.textContent=window.DASHBOARD_LANG==='en'?teamIdentity.dataset.i18nEn:teamIdentity.dataset.i18nZh;
@@ -3842,8 +3905,9 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   projectSearch.value=readDashboardPreference('foil_dashboard_search')||'';
   var lastActionsCollapsed=null;
   function syncUtilityPlacement(){
-    var utility=document.getElementById('dashboardUtility'),side=document.getElementById('sidebarActions'),mobile=document.getElementById('mobileUtilitySlot');
+    var utility=document.getElementById('dashboardUtility'),side=document.getElementById('sidebarActions'),mobile=document.getElementById('mobileActions');
     var compact=window.matchMedia('(max-width:700px)').matches||document.body.classList.contains('presentation-mode');
+    document.getElementById('mobileUtilitySlot').hidden=!compact;
     var destination=compact?mobile:side;
     if(utility.parentElement!==destination)destination.appendChild(utility);
     var sidebar=document.querySelector('.app-sidebar');
