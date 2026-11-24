@@ -92,6 +92,10 @@ in-progress status. Global counts remain in the confirmation center. Search
 regression verified four matched cards and four total grouped items; the reset
 link restores the full list. English and 375px layout were also checked.
 
+The standalone milestone workspace entry has been removed from desktop/mobile
+navigation. Existing `view=matrix` links return to the project overview. Project
+and model drawers retain their milestone history and role-controlled editing.
+
 Verified: four total unfinished rows vs. three pending rows in the isolated seed;
 Armie selection returns two rows; overview no longer renders the confirmation
 table; English default UI has no Chinese residue; 375px and 1280px have no page

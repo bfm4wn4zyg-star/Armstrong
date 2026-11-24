@@ -2127,7 +2127,6 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
   <nav class="sidebar-nav">
     <span class="nav-section" data-i18n-zh="工作台" data-i18n-en="WORKSPACE">工作台</span>
     <button class="sidebar-link active" data-workspace-view="overview" onclick="setView('overview')"><i>⌂</i><span data-i18n-zh="项目总览" data-i18n-en="Project Overview">项目总览</span></button>
-    <button class="sidebar-link" data-workspace-view="matrix" onclick="setView('matrix')"><i>▦</i><span data-i18n-zh="里程碑工作台" data-i18n-en="Milestone Workspace">里程碑工作台</span></button>
     <button class="sidebar-link" data-workspace-view="confirmations" onclick="setView('confirmations')"><i>☑</i><span data-i18n-zh="确认中心" data-i18n-en="Confirmation Center">确认中心</span></button>
     <button class="sidebar-link" data-workspace-view="reports" onclick="setView('reports')"><i>▤</i><span>日报 / 周报</span></button><div class="sidebar-search"><span>⌕</span><input id="sidebarSearch" type="search" placeholder="搜索项目、型号或负责人" data-placeholder-zh="搜索项目、型号或负责人" data-placeholder-en="Search projects, models or owners" oninput="renderSidebarProjects()"></div>
     <span class="nav-section project-nav-head"><span data-i18n-zh="产品线" data-i18n-en="PRODUCT LINES">产品线</span></span>
@@ -2146,7 +2145,7 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
   </header>
   <script>(function(){var b=document.getElementById('modeSwitch'),t=window.dashboardText;if(TEAM.role==='viewer'){b.hidden=true;return;}if(window.DASHBOARD_PM_MODE){b.textContent=t('返回只读看板');b.onclick=function(){switchDashboardMode(false);};}else{b.textContent=t('进入 PM 维护');b.onclick=function(){switchDashboardMode(true);};}})();</script>
   </section>
-  <div class="toolbar workspace-toolbar"><div class="tabs"><button class="tab active" data-view="overview" data-i18n-zh="项目总览" data-i18n-en="Project Overview" onclick="setView('overview')">项目总览</button><button class="tab" data-view="matrix" data-i18n-zh="里程碑工作台" data-i18n-en="Milestone Workspace" onclick="setView('matrix')">里程碑工作台</button><button class="tab" data-view="confirmations" data-i18n-zh="确认中心" data-i18n-en="Confirmation Center" onclick="setView('confirmations')">确认中心</button><button class="tab" data-view="reports" onclick="setView('reports')">日报 / 周报</button></div><div class="workspace-filters" id="workspaceFilters"><div class="priority-controls" id="priorityControls"><div class="workspace-filter-field"><label for="businessFilter">事业部</label><select id="businessFilter"></select></div><div class="workspace-filter-field"><label for="seriesStatusFilter">状态</label><select id="seriesStatusFilter"></select></div><div class="workspace-filter-field"><label for="priorityFilter">优先级</label><select id="priorityFilter"></select></div><div class="workspace-filter-field"><label for="prioritySort">排序方式</label><select id="prioritySort"></select></div><button class="btn workspace-reset" id="workspaceReset" type="button">清除筛选</button></div></div></div>
+  <div class="toolbar workspace-toolbar"><div class="tabs"><button class="tab active" data-view="overview" data-i18n-zh="项目总览" data-i18n-en="Project Overview" onclick="setView('overview')">项目总览</button><button class="tab" data-view="confirmations" data-i18n-zh="确认中心" data-i18n-en="Confirmation Center" onclick="setView('confirmations')">确认中心</button><button class="tab" data-view="reports" onclick="setView('reports')">日报 / 周报</button></div><div class="workspace-filters" id="workspaceFilters"><div class="priority-controls" id="priorityControls"><div class="workspace-filter-field"><label for="businessFilter">事业部</label><select id="businessFilter"></select></div><div class="workspace-filter-field"><label for="seriesStatusFilter">状态</label><select id="seriesStatusFilter"></select></div><div class="workspace-filter-field"><label for="priorityFilter">优先级</label><select id="priorityFilter"></select></div><div class="workspace-filter-field"><label for="prioritySort">排序方式</label><select id="prioritySort"></select></div><button class="btn workspace-reset" id="workspaceReset" type="button">清除筛选</button></div></div></div>
   <section class="executive-focus" id="executiveFocus"></section>
   <section class="health-snapshot" id="globalSnapshot" aria-label="项目健康总览"></section>
   <main id="main"></main>
@@ -2876,7 +2875,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   }
   window.applyDashboardFilter=function(filter){
     setWorkspaceFilter(statusSelect,'');
-    dashboardFilter=filter||'all';gateApproverFilter='';gateSeriesFilter='';view=dashboardFilter==='models'?'matrix':dashboardFilter==='waiting'?'confirmations':'overview';syncOverviewTabs();render();
+    dashboardFilter=filter||'all';gateApproverFilter='';gateSeriesFilter='';view=dashboardFilter==='waiting'?'confirmations':'overview';syncOverviewTabs();render();
     if(dashboardFilter==='waiting')setTimeout(function(){var target=document.getElementById('gateBoard');if(target)target.scrollIntoView({behavior:'smooth',block:'start'});},60);
     else setTimeout(function(){var target=document.querySelector('.overview-panel,.matrix');if(target)target.scrollIntoView({behavior:'smooth',block:'start'});},60);
   };
@@ -3841,6 +3840,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     }
   }
   window.setView=function(v){
+    if(v==='matrix')v='overview'; // Retired standalone route; milestone history remains in project details.
     view=v;dashboardFilter='all';gateApproverFilter='';gateSeriesFilter='';syncOverviewTabs();render();
     window.scrollTo(0,0);
   };
