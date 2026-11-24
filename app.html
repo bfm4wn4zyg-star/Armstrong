@@ -1751,7 +1751,7 @@ html[lang^="zh"] .dashboard5-theme :is(.health-matrix-head h2,.panel-head h2,.ga
 <link rel="stylesheet" href="dashboard-polish.css?v=20261124-unified-title">
 <link rel="stylesheet" href="portfolio-layout.css?v=20261124-grid1">
 <link rel="stylesheet" href="design-system.css?v=20261124-sidebar-actions">
-<link rel="stylesheet" href="nimblify-system.css?v=20261124-card-readability">
+<link rel="stylesheet" href="nimblify-system.css?v=20261124-sidebar-unified">
 </head>
 <body class="dashboard5-theme d6-style readonly-dashboard">
 <script type="application/json" id="teamBootstrap"><!--ARMSTRONG_BOOTSTRAP--></script>
@@ -2126,9 +2126,9 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
   <div class="sidebar-brand"><span class="brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="armstrongBrand" x2="1" y2="1"><stop stop-color="#00c2ff"/><stop offset=".55" stop-color="#2463ff"/><stop offset="1" stop-color="#b249ff"/></linearGradient></defs><path d="m1 17 10-12 10 12-10 12Z" fill="url(#armstrongBrand)"/><path d="m18 17 10-12 10 12-10 12Z" fill="url(#armstrongBrand)"/></svg></span><div><b>Armstrong</b><small data-i18n-zh="全球产品开发" data-i18n-en="Global Product Development">全球产品开发</small></div></div>
   <nav class="sidebar-nav">
     <span class="nav-section" data-i18n-zh="工作台" data-i18n-en="WORKSPACE">工作台</span>
-    <button class="sidebar-link active" data-workspace-view="overview" onclick="setView('overview')"><i>⌂</i><span data-i18n-zh="项目总览" data-i18n-en="Project Overview">项目总览</span></button>
-    <button class="sidebar-link" data-workspace-view="confirmations" onclick="setView('confirmations')"><i>☑</i><span data-i18n-zh="确认中心" data-i18n-en="Confirmation Center">确认中心</span></button>
-    <button class="sidebar-link" data-workspace-view="reports" onclick="setView('reports')"><i>▤</i><span>日报 / 周报</span></button><div class="sidebar-search"><span>⌕</span><input id="sidebarSearch" type="search" placeholder="搜索项目、型号或负责人" data-placeholder-zh="搜索项目、型号或负责人" data-placeholder-en="Search projects, models or owners" oninput="renderSidebarProjects()"></div>
+    <button class="sidebar-link active" data-workspace-view="overview" onclick="setView('overview')"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v11h-6v-7H9v7H3V10Z"/></svg></i><span data-i18n-zh="项目总览" data-i18n-en="Project Overview">项目总览</span></button>
+    <button class="sidebar-link" data-workspace-view="confirmations" onclick="setView('confirmations')"><i aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/></svg></i><span data-i18n-zh="确认中心" data-i18n-en="Confirmation Center">确认中心</span></button>
+    <button class="sidebar-link" data-workspace-view="reports" onclick="setView('reports')"><i aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></i><span>日报 / 周报</span></button><div class="sidebar-search"><span>⌕</span><input id="sidebarSearch" type="search" placeholder="搜索项目、型号或负责人" data-placeholder-zh="搜索项目、型号或负责人" data-placeholder-en="Search projects, models or owners" oninput="renderSidebarProjects()"></div>
     <span class="nav-section project-nav-head"><span data-i18n-zh="产品线" data-i18n-en="PRODUCT LINES">产品线</span></span>
     <div class="sidebar-projects" id="sidebarProjects"></div>
   </nav>
@@ -2607,9 +2607,9 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   }
   var creatingProjectLine='hydrofoil';
   var BUSINESS_LINES=[
-    {id:'hydrofoil',name:'板翼事业部',en:'Foils & Boards',icon:'◉'},
-    {id:'boardwing',name:'风筝事业部',en:'Wings',icon:'◒'},
-    {id:'accessories',name:'配件事业部',en:'Accessories',icon:'⚙'}
+    {id:'hydrofoil',name:'板翼事业部',en:'Foils & Boards',icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M12 7v10M6 17h12M8 21h8"/></svg>'},
+    {id:'boardwing',name:'风筝事业部',en:'Wings',icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 6-9 10L3 9l9-6Zm0 0v16M3 9h18M12 19l2 3"/></svg>'},
+    {id:'accessories',name:'配件事业部',en:'Accessories',icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5v9l-9 5-9-5V8l9-5ZM3 8l9 5 9-5M12 13v9M7.5 5.5l9 5"/></svg>'}
   ];
   function businessLineMatches(groupId,lineId){return groupId==='boardwing'?(lineId==='surfboard'||lineId==='kite'):groupId===lineId;}
   var sidebarGroupState={hydrofoil:true,boardwing:true,accessories:true};

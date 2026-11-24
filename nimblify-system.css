@@ -27,7 +27,17 @@ body.dashboard5-theme.d6-style .sidebar-link i{font-size:18px;color:inherit}
 body.dashboard5-theme.d6-style .sidebar-search{background:#f5f7fa;border:1px solid var(--ds-line);padding:9px 10px;margin:8px 0 4px;border-radius:10px}
 body.dashboard5-theme.d6-style .sidebar-search input{font-size:13px}
 body.dashboard5-theme.d6-style .business-toggle{border-radius:10px;padding:10px 8px;font-size:14px;color:#4b5569}
-body.dashboard5-theme.d6-style .business-label b{font-size:14px;font-weight:600}
+body.dashboard5-theme.d6-style .business-label b{font-size:14px;font-weight:500}
+/* Sidebar sections share typography and icon stroke; product status stays separate. */
+body.dashboard5-theme.d6-style .app-sidebar :is(.sidebar-link>span,.business-label b){font-family:var(--brand-body)!important;font-size:14px!important;font-weight:500;line-height:1.5;letter-spacing:normal;color:#4b5569}
+body.dashboard5-theme.d6-style .app-sidebar .sidebar-link.active>span{color:var(--ds-blue);font-weight:600}
+body.dashboard5-theme.d6-style .app-sidebar .business-toggle{grid-template-columns:20px minmax(0,1fr) 12px 8px;gap:11px;min-height:44px;padding:11px 12px;color:#4b5569}
+body.dashboard5-theme.d6-style .business-toggle>:is(.line-icon,.business-label,.chevron,.signal){grid-row:1}
+body.dashboard5-theme.d6-style .business-toggle .line-icon{grid-column:1;display:grid;place-items:center;width:20px;height:20px;color:inherit}
+body.dashboard5-theme.d6-style .business-toggle .business-label{grid-column:2}
+body.dashboard5-theme.d6-style .business-toggle .chevron{grid-column:3;font-size:8px;color:#94a3b8}
+body.dashboard5-theme.d6-style .business-toggle>.signal{grid-column:4}
+body.dashboard5-theme.d6-style .app-sidebar :is(.sidebar-link>i,.business-toggle .line-icon)>svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 body.dashboard5-theme.d6-style .business-children .sidebar-link{padding:8px 6px;min-height:38px}
 body.dashboard5-theme.d6-style .business-children .sidebar-link span{font-size:13px;line-height:1.5}
 body.dashboard5-theme.d6-style .sidebar-project-row{display:block;position:relative;min-width:0}
