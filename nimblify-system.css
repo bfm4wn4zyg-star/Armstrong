@@ -294,3 +294,33 @@ body.dashboard5-theme.d6-style:not(.presentation-mode)[data-workspace-view="samp
 }
 @media(max-width:540px){body.dashboard5-theme.d6-style .portfolio-project-grid{grid-template-columns:minmax(0,1fr)!important}body.dashboard5-theme.d6-style .portfolio-project{grid-template-columns:66px minmax(0,1fr)!important}body.dashboard5-theme.d6-style .portfolio-illustration{width:66px}body.dashboard5-theme.d6-style .global-snapshot .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}body.dashboard5-theme.d6-style .global-snapshot{padding:16px}body.dashboard5-theme.d6-style .portfolio-project-name{font-size:16px}}
 @media(prefers-reduced-motion:reduce){body.dashboard5-theme.d6-style *{transition:none!important;scroll-behavior:auto!important}}
+
+/* Column alignment is assigned once from the heading by decorateSharedTables().
+   Keep this after legacy table rules: otherwise th defaults can override dates
+   while their td.cell-center still centers the values. */
+body.dashboard5-theme.d6-style :is(#main,#drawerBody) table :is(th,td)[data-column-align="left"]{text-align:left!important;vertical-align:middle}
+body.dashboard5-theme.d6-style :is(#main,#drawerBody) table :is(th,td)[data-column-align="center"]{text-align:center!important;vertical-align:middle}
+body.dashboard5-theme.d6-style :is(#main,#drawerBody) td[data-column-align="center"] .bar{margin-inline:auto}
+body.dashboard5-theme.d6-style :is(#main,#drawerBody) td[data-column-align="left"] :is(.series-detail-link,.approver-link){margin:0;padding:0;text-align:left;vertical-align:baseline}
+body.dashboard5-theme.d6-style :is(#main,#drawerBody) td[data-column-align="center"] :is(.series-detail-link,.edit-variant){margin:0;text-align:center}
+body.dashboard5-theme.d6-style :is(.confirmation-load-head,.gate-board-head,.workspace-section-head){display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;border-bottom:1px solid var(--ds-line);background:#fff}
+body.dashboard5-theme.d6-style .confirmation-load-head h2{margin:0!important;font:600 20px/1.4 var(--brand-body);color:var(--ds-ink)}
+body.dashboard5-theme.d6-style .matrix.table-as-cards td[data-column-align]{text-align:left!important}
+body.dashboard5-theme.d6-style .matrix.table-as-cards td[data-column-align] .bar{margin-inline:0}
+/* Keep complete dates and status labels readable on smaller desktop screens.
+   Only the table container scrolls; the page never grows wider. */
+@media(min-width:769px){
+ body.dashboard5-theme.d6-style #main .gate-table-wrap{overflow-x:auto!important;max-width:100%;scrollbar-width:thin}
+ body.dashboard5-theme.d6-style #main .gate-table{display:table!important;min-width:1120px!important}
+ body.dashboard5-theme.d6-style #main .gate-table :is(th,td):is(:nth-child(5),:nth-child(6),:nth-child(7),:nth-child(9)){white-space:nowrap}
+ body.dashboard5-theme.d6-style #main .gate-table .status{white-space:nowrap}
+ body.dashboard5-theme.d6-style #main .milestone-workbench .matrix:not(.table-as-cards){overflow-x:auto;max-width:100%;scrollbar-width:thin}
+ body.dashboard5-theme.d6-style #main .milestone-workbench .matrix:not(.table-as-cards) table{min-width:1120px!important}
+ body.dashboard5-theme.d6-style #main .milestone-workbench .matrix:not(.table-as-cards) table :is(th,td):is(:nth-child(5),:nth-child(6),:nth-child(8)){white-space:nowrap}
+}
+@media(max-width:768px){
+ body.dashboard5-theme.d6-style :is(#main,#drawerBody) table td[data-column-align]{text-align:left!important;vertical-align:top}
+ body.dashboard5-theme.d6-style :is(#main,#drawerBody) table td[data-column-align] :is(.series-detail-link,.edit-variant){text-align:left}
+ body.dashboard5-theme.d6-style :is(#main,#drawerBody) table td[data-column-align] .bar{margin-inline:0}
+ body.dashboard5-theme.d6-style :is(.confirmation-load-head,.gate-board-head,.workspace-section-head){padding:18px 16px;flex-wrap:wrap}
+}

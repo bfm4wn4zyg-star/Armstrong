@@ -43,3 +43,18 @@ report generation continue to use their existing handlers.
 
 This is a visual integration. It does not add email delivery, automated scheduling
 or backend account administration.
+
+## Alignment review
+
+Column alignment is now assigned to both headers and cells by the shared table
+decorator. Text/people columns use a common left edge; dates, counts, progress,
+statuses and actions use a common center axis. The rules cover Chinese and English
+overview, milestone, report, sample and drawer tables. Mobile row cards reset
+content to the left edge beneath their field labels.
+
+Browser checks compared each visible column's computed alignment and horizontal
+padding between its heading and all rows. All checked columns matched. Additional
+checks covered equal card heights, report label/input edges and no page overflow
+at 375px and 1280px. Narrow desktop milestone/confirmation tables scroll within
+their own container so complete dates remain readable. Confirmation summary
+headings and cards now share the same section inset.

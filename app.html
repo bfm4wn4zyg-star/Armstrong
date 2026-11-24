@@ -1751,7 +1751,7 @@ html[lang^="zh"] .dashboard5-theme :is(.health-matrix-head h2,.panel-head h2,.ga
 <link rel="stylesheet" href="dashboard-polish.css?v=20261124-unified-title">
 <link rel="stylesheet" href="portfolio-layout.css?v=20261124-grid1">
 <link rel="stylesheet" href="design-system.css?v=20261124-sidebar-actions">
-<link rel="stylesheet" href="nimblify-system.css?v=20261124-integrated1">
+<link rel="stylesheet" href="nimblify-system.css?v=20261124-column-alignment">
 </head>
 <body class="dashboard5-theme d6-style readonly-dashboard">
 <script type="application/json" id="teamBootstrap"><!--ARMSTRONG_BOOTSTRAP--></script>
@@ -3753,11 +3753,21 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   function decorateSharedTables(){
     document.querySelectorAll('.matrix-view-tools').forEach(function(tools){tools.remove();});
     document.querySelectorAll('#main table,#drawerBody table').forEach(function(table){
-      var labels=Array.from(table.querySelectorAll('thead th')).map(function(th){return th.textContent.trim();});
+      var headers=Array.from(table.querySelectorAll('thead th'));
+      var labels=headers.map(function(th){return th.textContent.trim();});
+      // One column contract for the heading and every body cell, in either language.
+      // Text/people stay left; dates, counts, status and actions share a center axis.
+      var centered=/^(提交日期|需要日期|计划日期|实际日期|承诺日期|计划完成日|下一截止日|下一节点|已等待|数量|状态|系列状态|操作|里程碑完成度|整体进度|进度|完成度|submitted|submitted date|submission date|needed by|required date|planned date|actual date|committed date|next milestone|next due date|waiting|quantity|qty|status|series status|actions?|milestone progress|milestone completion|overall progress|progress)$/i;
+      var alignments=headers.map(function(th){
+        var align=centered.test(th.textContent.trim())||th.classList.contains('cell-center')||th.classList.contains('overview-center')||th.classList.contains('table-status-cell')?'center':'left';
+        th.dataset.columnAlign=align;
+        return align;
+      });
       table.querySelectorAll('tbody tr').forEach(function(row){
         Array.from(row.children).forEach(function(cell,index){
           if(cell.colSpan>1)return;
           cell.dataset.label=labels[index]||'';
+          cell.dataset.columnAlign=alignments[index]||'left';
           cell.classList.toggle('empty-matrix-cell',table.closest('.matrix')!==null&&index===0&&!cell.textContent.trim());
         });
       });
