@@ -453,6 +453,29 @@ body.dashboard5-theme.d6-style :is(.gate-table,.variant-table,.series-schedule-t
 body.dashboard5-theme.d6-style :is(.gate-table,.variant-table,.series-schedule-table,.sample-table) th{font-size:13px;font-weight:600}
 body.dashboard5-theme.d6-style :is(.report-form,.report-section){font-size:14px;line-height:1.6}
 
+/* Shared editorial hierarchy with native system typography. */
+body.dashboard5-theme.d6-style{
+ --heading-font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+ --heading-ink:#1d1d1f;--heading-secondary:#6e6e73;
+}
+body.dashboard5-theme.d6-style:not(.presentation-mode) #workspaceTitle{
+ font:600 32px/1.2 var(--heading-font);letter-spacing:-.025em;color:var(--heading-ink);margin:0;
+}
+body.dashboard5-theme.d6-style #workspaceSubtitle{
+ font:400 16px/1.6 var(--heading-font);letter-spacing:normal;color:var(--heading-secondary);margin:12px 0 0;max-width:60ch;
+}
+body.dashboard5-theme.d6-style :is(#main .workspace-section-head h2,#main .gate-board-head h2,#main .confirmation-load-head h2,#main .confirm-people-intro h2,.confirm-summary-heading h2){
+ font:600 20px/1.35 var(--heading-font);letter-spacing:-.015em;color:var(--heading-ink);margin:0;
+}
+body.dashboard5-theme.d6-style :is(.workspace-section-head,.gate-board-head,.confirmation-load-head,.confirm-people-intro) p{
+ font:400 14px/1.6 var(--heading-font);letter-spacing:normal;color:var(--heading-secondary);margin:8px 0 0;
+}
+body.dashboard5-theme.d6-style .confirm-summary-heading>span{font:400 14px/1.6 var(--heading-font);color:var(--heading-secondary)}
+@media(max-width:700px){
+ body.dashboard5-theme.d6-style:not(.presentation-mode) #workspaceTitle{font-size:28px}
+ body.dashboard5-theme.d6-style #workspaceSubtitle{font-size:15px;margin-top:10px}
+}
+
 /* Overview footer matches the approved reference, using the filtered cards.
    Global counts belong to the confirmation center rather than this footer. */
 body.dashboard5-theme.d6-style .health-snapshot{display:grid;grid-template-columns:1.65fr repeat(4,minmax(0,.9fr)) 1.5fr;align-items:center;gap:0;margin:20px 0 28px;padding:22px 20px;border:1px solid #dce3ef;border-radius:16px;background:linear-gradient(110deg,#fbfcff,#f2f5fc);box-shadow:none;min-width:0}

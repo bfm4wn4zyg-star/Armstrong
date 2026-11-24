@@ -1751,7 +1751,7 @@ html[lang^="zh"] .dashboard5-theme :is(.health-matrix-head h2,.panel-head h2,.ga
 <link rel="stylesheet" href="dashboard-polish.css?v=20261124-unified-title">
 <link rel="stylesheet" href="portfolio-layout.css?v=20261124-grid1">
 <link rel="stylesheet" href="design-system.css?v=20261124-sidebar-actions">
-<link rel="stylesheet" href="nimblify-system.css?v=20261124-sidebar-unified">
+<link rel="stylesheet" href="nimblify-system.css?v=20261124-heading-system">
 </head>
 <body class="dashboard5-theme d6-style readonly-dashboard">
 <script type="application/json" id="teamBootstrap"><!--ARMSTRONG_BOOTSTRAP--></script>
@@ -3753,7 +3753,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   }
   function reportsHtml(){
     var sections=['已完成','延误或阻塞','等待确认中','正在推进'],data=reportData();
-    return '<section class="panel report-panel workspace-section"><div class="panel-head workspace-section-head"><div><h2>日报 / 周报</h2><p>按计划、提交或更新时间列出范围内的记录。状态以当前看板为准。</p><p data-i18n-zh="已完成事项按实际完成日期收录。" data-i18n-en="Completed milestones are listed by actual completion date.">已完成事项按实际完成日期收录。</p></div></div>'+
+    return '<section class="panel report-panel workspace-section"><div class="panel-head workspace-section-head"><div><h2 data-i18n-zh="汇总范围" data-i18n-en="Report scope">汇总范围</h2><p>按计划、提交或更新时间列出范围内的记录。状态以当前看板为准。</p><p data-i18n-zh="已完成事项按实际完成日期收录。" data-i18n-en="Completed milestones are listed by actual completion date.">已完成事项按实际完成日期收录。</p></div></div>'+
       '<form id="reportForm" class="report-form"><button type="button" class="btn" data-period="day" aria-pressed="'+(reportPeriod==='day')+'">今日日报</button>'+
       '<button type="button" class="btn" data-period="week" aria-pressed="'+(reportPeriod==='week')+'">本周周报</button>'+
       '<label>开始日期<input type="date" name="start" max="'+reportEnd+'" value="'+reportStart+'" required></label>'+
