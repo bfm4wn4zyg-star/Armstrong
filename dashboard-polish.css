@@ -9,6 +9,12 @@ body.dashboard5-theme.d6-style{
 .dashboard5-theme.d6-style :is(button,input,select,textarea){font-family:inherit}
 .dashboard5-theme.d6-style .app{padding:28px 32px 56px;min-width:0}
 .dashboard5-theme.d6-style .app-sidebar{background:#f9f9fc;border-right:1px solid #e5e5ea;box-shadow:none}
+.dashboard5-theme.d6-style .sidebar-brand{display:flex;align-items:center;gap:14px;padding-block:14px;min-height:80px}
+.dashboard5-theme.d6-style .sidebar-brand .brand-mark{display:grid;place-items:center;flex:0 0 52px;width:52px;height:52px;border-radius:14px;font-size:23px;font-weight:750;line-height:1;letter-spacing:-.025em}
+.dashboard5-theme.d6-style .sidebar-brand>div{min-width:0}
+.dashboard5-theme.d6-style .sidebar-brand b{font-size:22px;line-height:1.25}
+.dashboard5-theme.d6-style .sidebar-brand small{font-size:13px;line-height:1.5;margin-top:3px}
+.dashboard5-theme.d6-style.sidebar-collapsed .sidebar-brand{gap:0}
 .dashboard5-theme.d6-style .sidebar-link{font-size:15px;min-height:44px;border-radius:11px}
 .dashboard5-theme.d6-style .sidebar-link.active{background:#e5efff;color:#0060cb;box-shadow:none}
 .dashboard5-theme.d6-style .sidebar-foot{background:#fff;border:0;border-radius:14px}
