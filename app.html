@@ -1751,7 +1751,7 @@ html[lang^="zh"] .dashboard5-theme :is(.health-matrix-head h2,.panel-head h2,.ga
 <link rel="stylesheet" href="dashboard-polish.css?v=20261124-unified-title">
 <link rel="stylesheet" href="portfolio-layout.css?v=20261124-grid1">
 <link rel="stylesheet" href="design-system.css?v=20261124-sidebar-actions">
-<link rel="stylesheet" href="nimblify-system.css?v=20261124-confirmation-center">
+<link rel="stylesheet" href="nimblify-system.css?v=20261124-topbar-actions">
 </head>
 <body class="dashboard5-theme d6-style readonly-dashboard">
 <script type="application/json" id="teamBootstrap"><!--ARMSTRONG_BOOTSTRAP--></script>
@@ -1776,6 +1776,7 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
   var requestedLang=new URLSearchParams(location.search).get('lang');
   var lang=requestedLang==='en'||requestedLang==='zh'?requestedLang:(readDashboardPreference('foil_dashboard_language')||'zh');
   var en={
+    '操作与偏好':'Actions & preferences',
     '全局项目概况':'Workspace snapshot',
     '全部数据 · 不受搜索筛选影响':'All data · independent of search and filters',
     '确认中心':'Confirmation Center',
@@ -2118,20 +2119,16 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
     <div class="sidebar-projects" id="sidebarProjects"></div>
   </nav>
   <div class="sidebar-bottom">
-    <details id="sidebarActions" class="sidebar-actions" open><summary title="操作 / Actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="white"/><circle cx="15" cy="17" r="3" fill="white"/></svg><span data-i18n-zh="操作与偏好" data-i18n-en="Actions & preferences">操作与偏好</span></summary>
-  <div class="dashboard-utility" id="dashboardUtility"><div class="actions"><div class="language-switch" role="group" aria-label="Language"><button type="button" data-lang="zh" onclick="setDashboardLanguage('zh')">中文</button><button type="button" data-lang="en" onclick="setDashboardLanguage('en')">EN</button></div><button class="btn" id="reviewSnapshotExport" type="button" hidden data-i18n-zh="导出评审数据" data-i18n-en="Export review data">导出评审数据</button><span id="teamIdentity" class="team-identity"></span><button id="teamLogout" class="btn" type="button" data-i18n-zh="退出登录" data-i18n-en="Sign out">退出登录</button><button class="btn presentation-home" id="presentationHome" type="button" hidden>返回总览</button><button class="btn presentation-toggle" id="presentationToggle" type="button" aria-pressed="false">演示模式</button><button class="btn mode-switch" id="modeSwitch" type="button"></button></div></div>
-    </details>
   <div class="sidebar-foot"><span>ϟ</span><div><b data-i18n-zh="让每一步进展清晰可见" data-i18n-en="Keep every step in view">让每一步进展清晰可见</b><small data-i18n-zh="聚焦风险，协同推进。" data-i18n-en="Spot risks. Move forward together.">聚焦风险，协同推进。</small><button type="button" class="sidebar-overview" onclick="setView('overview')" data-i18n-zh="查看项目总览" data-i18n-en="View project overview">查看项目总览</button></div></div>
   </div>
 </aside>
 <div class="dashboard-stage">
-  <nav class="dashboard-topbar"><button type="button" class="sidebar-collapse-toggle" id="sidebarCollapseToggle" onclick="toggleDashboardSidebar()" aria-label="收起侧边栏" aria-expanded="true"><span></span><span></span><span></span></button><label class="global-search" for="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6"/></svg><input class="search" id="search" type="search" aria-label="搜索项目、型号或负责人" placeholder="搜索项目、型号或负责人" data-placeholder-zh="搜索项目、型号或负责人" data-placeholder-en="Search projects, models or owners" oninput="searchDashboardProjects(this.value)"></label><div class="workspace-account"><button type="button" class="pending-shortcut" onclick="applyDashboardFilter('waiting')" title="等待确认中" aria-label="等待确认中"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 17h14l-2-4V8a5 5 0 0 0-10 0v5l-2 4ZM9 20h6M11 2h2"/></svg><span id="pendingBadge" hidden></span></button><span class="workspace-avatar" id="workspaceAvatar">AF</span><div class="workspace-account-copy"><b id="workspaceAccountName"></b><small id="workspaceAccountRole"></small></div></div></nav>
+  <nav class="dashboard-topbar"><button type="button" class="sidebar-collapse-toggle" id="sidebarCollapseToggle" onclick="toggleDashboardSidebar()" aria-label="收起侧边栏" aria-expanded="true"><span></span><span></span><span></span></button><label class="global-search" for="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6"/></svg><input class="search" id="search" type="search" aria-label="搜索项目、型号或负责人" placeholder="搜索项目、型号或负责人" data-placeholder-zh="搜索项目、型号或负责人" data-placeholder-en="Search projects, models or owners" oninput="searchDashboardProjects(this.value)"></label><div class="workspace-account"><details id="topbarActions" class="topbar-actions"><summary title="操作与偏好" aria-label="操作与偏好"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="white"/><circle cx="15" cy="17" r="3" fill="white"/></svg><span data-i18n-zh="操作与偏好" data-i18n-en="Actions & preferences">操作与偏好</span></summary>  <div class="dashboard-utility" id="dashboardUtility"><div class="actions"><div class="language-switch" role="group" aria-label="Language"><button type="button" data-lang="zh" onclick="setDashboardLanguage('zh')">中文</button><button type="button" data-lang="en" onclick="setDashboardLanguage('en')">EN</button></div><button class="btn" id="reviewSnapshotExport" type="button" hidden data-i18n-zh="导出评审数据" data-i18n-en="Export review data">导出评审数据</button><span id="teamIdentity" class="team-identity"></span><button id="teamLogout" class="btn" type="button" data-i18n-zh="退出登录" data-i18n-en="Sign out">退出登录</button><button class="btn presentation-home" id="presentationHome" type="button" hidden>返回总览</button><button class="btn presentation-toggle" id="presentationToggle" type="button" aria-pressed="false">演示模式</button><button class="btn mode-switch" id="modeSwitch" type="button"></button></div></div>    </details><button type="button" class="pending-shortcut" onclick="applyDashboardFilter('waiting')" title="等待确认中" aria-label="等待确认中"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 17h14l-2-4V8a5 5 0 0 0-10 0v5l-2 4ZM9 20h6M11 2h2"/></svg><span id="pendingBadge" hidden></span></button><span class="workspace-avatar" id="workspaceAvatar">AF</span><div class="workspace-account-copy"><b id="workspaceAccountName"></b><small id="workspaceAccountRole"></small></div></div></nav>
 <div class="app">
   <section class="dashboard-hero">
   <header class="header">
      <div><h1 id="workspaceTitle">项目健康度总览</h1><p id="workspaceSubtitle">追踪项目进度，识别风险，让团队的每一步清晰可见。</p><p id="d6Headline" class="d6-headline"></p></div><div class="workspace-head-actions"><button type="button" id="workspaceNewProject" class="btn" onclick="openNewProject()" hidden><span aria-hidden="true">＋</span><span data-i18n-zh="新建项目" data-i18n-en="New project">新建项目</span></button></div>
   </header>
-  <div id="mobileUtilitySlot"><details id="mobileActions" class="mobile-actions"><summary data-i18n-zh="操作与偏好" data-i18n-en="Actions & preferences">操作与偏好</summary></details></div>
   <script>(function(){var b=document.getElementById('modeSwitch'),t=window.dashboardText;if(TEAM.role==='viewer'){b.hidden=true;return;}if(window.DASHBOARD_PM_MODE){b.textContent=t('返回只读看板');b.onclick=function(){switchDashboardMode(false);};}else{b.textContent=t('进入 PM 维护');b.onclick=function(){switchDashboardMode(true);};}})();</script>
   </section>
   <div class="toolbar workspace-toolbar"><div class="tabs"><button class="tab active" data-view="overview" data-i18n-zh="项目总览" data-i18n-en="Project Overview" onclick="setView('overview')">项目总览</button><button class="tab" data-view="matrix" data-i18n-zh="里程碑工作台" data-i18n-en="Milestone Workspace" onclick="setView('matrix')">里程碑工作台</button><button class="tab" data-view="confirmations" data-i18n-zh="确认中心" data-i18n-en="Confirmation Center" onclick="setView('confirmations')">确认中心</button><button class="tab" data-view="reports" onclick="setView('reports')">日报 / 周报</button></div><div class="workspace-filters" id="workspaceFilters"><div class="priority-controls" id="priorityControls"><div class="workspace-filter-field"><label for="businessFilter">事业部</label><select id="businessFilter"></select></div><div class="workspace-filter-field"><label for="seriesStatusFilter">状态</label><select id="seriesStatusFilter"></select></div><div class="workspace-filter-field"><label for="priorityFilter">优先级</label><select id="priorityFilter"></select></div><div class="workspace-filter-field"><label for="prioritySort">排序方式</label><select id="prioritySort"></select></div><button class="btn workspace-reset" id="workspaceReset" type="button">清除筛选</button></div></div></div>
@@ -3942,21 +3939,16 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     location.replace(location.pathname);
   };
   projectSearch.value=readDashboardPreference('foil_dashboard_search')||'';
-  var lastActionsCollapsed=null;
-  function syncUtilityPlacement(){
-    var utility=document.getElementById('dashboardUtility'),side=document.getElementById('sidebarActions'),mobile=document.getElementById('mobileActions');
-    var compact=window.matchMedia('(max-width:700px)').matches||document.body.classList.contains('presentation-mode');
-    document.getElementById('mobileUtilitySlot').hidden=!compact;
-    var destination=compact?mobile:side;
-    if(utility.parentElement!==destination)destination.appendChild(utility);
-    var sidebar=document.querySelector('.app-sidebar');
-    var collapsed=document.body.classList.contains('sidebar-collapsed')||(!compact&&sidebar.getBoundingClientRect().width<120);
-    side.classList.toggle('actions-collapsed',collapsed);
-    if(collapsed!==lastActionsCollapsed){side.open=!collapsed;lastActionsCollapsed=collapsed;}
-  }
-  window.addEventListener('resize',syncUtilityPlacement);
-  new MutationObserver(syncUtilityPlacement).observe(document.body,{attributes:true,attributeFilter:['class']});
-  syncUtilityPlacement();
+  var topbarActions=document.getElementById('topbarActions');
+  document.addEventListener('click',function(event){
+    if(topbarActions.open&&!topbarActions.contains(event.target))topbarActions.open=false;
+  });
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Escape'&&topbarActions.open){
+      topbarActions.open=false;event.preventDefault();event.stopImmediatePropagation();
+      topbarActions.querySelector('summary').focus({preventScroll:true});
+    }
+  },true);
   render();
   var query=new URLSearchParams(location.search);
   var requestedView=query.get('view');

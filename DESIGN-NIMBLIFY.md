@@ -74,6 +74,14 @@ existing records. Avatars use initials, not invented staff portraits. Joint
 confirmations count once in the total and once for each assigned approver.
 The center is independent of the overview's business-line/priority filters.
 
+Workspace actions now live in a single, collapsed-by-default `topbarActions`
+details control immediately before the notification bell. Language, export,
+sign-out, presentation and PM mode retain their original DOM nodes and handlers.
+The sidebar/mobile duplicate action slots and relocation observer were removed.
+Outside click and Escape close the panel; Escape restores trigger focus. The
+same menu remains available in presentation mode. Browser checks verified these
+interactions, both languages, and the 375px panel bounds with no page overflow.
+
 Verified: four total unfinished rows vs. three pending rows in the isolated seed;
 Armie selection returns two rows; overview no longer renders the confirmation
 table; English default UI has no Chinese residue; 375px and 1280px have no page

@@ -396,3 +396,32 @@ body.dashboard5-theme.d6-style .matrix.table-as-cards td[data-column-align] .bar
  body.dashboard5-theme.d6-style :is(#main,#drawerBody) table td[data-column-align] .bar{margin-inline:0}
  body.dashboard5-theme.d6-style :is(.confirmation-load-head,.gate-board-head,.workspace-section-head){padding:18px 16px;flex-wrap:wrap}
 }
+
+/* A single, collapsed-by-default action menu beside notifications. The original
+   controls stay in one DOM location on desktop, mobile and presentation mode. */
+body.dashboard5-theme.d6-style .topbar-actions{position:relative;min-width:0;flex-shrink:0;z-index:50}
+body.dashboard5-theme.d6-style .topbar-actions>summary{display:flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:8px 12px;list-style:none;border:1px solid #dce1e9;border-radius:10px;background:#fff;color:#475569;font-size:13px;font-weight:500;white-space:nowrap;cursor:pointer;user-select:none}
+body.dashboard5-theme.d6-style .topbar-actions>summary::-webkit-details-marker{display:none}
+body.dashboard5-theme.d6-style .topbar-actions>summary svg{display:block;width:18px;height:18px;flex-shrink:0}
+body.dashboard5-theme.d6-style .topbar-actions[open]>summary{background:#eff4ff;border-color:#cbdcfd;color:var(--ds-blue)}
+body.dashboard5-theme.d6-style .topbar-actions:not([open])>.dashboard-utility{display:none!important}
+body.dashboard5-theme.d6-style .topbar-actions[open]>.dashboard-utility{display:block!important;position:absolute!important;top:calc(100% + 10px)!important;right:0!important;left:auto!important;bottom:auto!important;transform:none!important;width:292px;max-width:calc(100vw - 32px);min-width:0;margin:0!important;padding:16px!important;border:1px solid var(--ds-line);border-radius:14px;background:#fff!important;box-shadow:0 8px 28px #17203914;z-index:80}
+body.dashboard5-theme.d6-style .topbar-actions .actions{position:static!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;max-width:100%;min-width:0;margin:0;padding:0;justify-content:stretch}
+body.dashboard5-theme.d6-style .topbar-actions .actions>.btn{width:100%;min-width:0;min-height:40px;height:auto;padding:9px 10px;border:1px solid var(--ds-line);border-radius:10px;background:#fff;color:var(--ds-ink);font-size:13px;line-height:1.5;white-space:normal;box-shadow:none}
+body.dashboard5-theme.d6-style .topbar-actions :is(.language-switch,#modeSwitch,#reviewSnapshotExport,#presentationHome){grid-column:1/-1}
+body.dashboard5-theme.d6-style .topbar-actions .language-switch{display:flex;align-items:center;gap:4px;width:100%;height:40px;padding:4px;border:1px solid var(--ds-line);border-radius:10px;background:#f1f5f9}
+body.dashboard5-theme.d6-style .topbar-actions .language-switch button{flex:1;height:30px;min-height:30px;padding:4px 10px;border:0;border-radius:7px;background:transparent;color:var(--ds-muted);font-size:13px;font-weight:600}
+body.dashboard5-theme.d6-style .topbar-actions .language-switch button.active{background:#fff;color:var(--ds-ink);box-shadow:var(--ds-shadow)}
+body.dashboard5-theme.d6-style .topbar-actions #modeSwitch{background:var(--ds-blue);border-color:var(--ds-blue);color:#fff}
+body.dashboard5-theme.d6-style .topbar-actions #teamLogout{color:#b91c1c}
+@media(max-width:700px){
+ body.dashboard5-theme.d6-style .topbar-actions>summary{width:34px;min-height:34px;height:34px;padding:7px}
+ body.dashboard5-theme.d6-style .topbar-actions>summary>span{display:none}
+ body.dashboard5-theme.d6-style .topbar-actions[open]>.dashboard-utility{right:-76px!important;max-width:calc(100vw - 32px)}
+ body.dashboard5-theme.d6-style .dashboard-topbar .global-search{flex:1;width:auto}
+}
+body.dashboard5-theme.d6-style.presentation-mode .dashboard-topbar{display:flex!important;position:fixed;top:12px;right:16px;width:auto;height:38px;min-height:38px;padding:0;background:transparent;border:0;box-shadow:none;z-index:60}
+body.dashboard5-theme.d6-style.presentation-mode .dashboard-topbar>:not(.workspace-account),
+body.dashboard5-theme.d6-style.presentation-mode .workspace-account>:not(.topbar-actions){display:none!important}
+body.dashboard5-theme.d6-style.presentation-mode .workspace-account{display:flex;margin:0;gap:0}
+body.dashboard5-theme.d6-style.presentation-mode .topbar-actions[open]>.dashboard-utility{right:0!important}
