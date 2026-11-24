@@ -426,6 +426,23 @@ body.dashboard5-theme.d6-style.presentation-mode .workspace-account>:not(.topbar
 body.dashboard5-theme.d6-style.presentation-mode .workspace-account{display:flex;margin:0;gap:0}
 body.dashboard5-theme.d6-style.presentation-mode .topbar-actions[open]>.dashboard-utility{right:0!important}
 
+/* Explicit card geometry isolates legacy .warning margin/font rules.
+   Hover uses elevation only, keeping all row edges on the same baseline. */
+body.dashboard5-theme.d6-style .portfolio-project{
+ box-sizing:border-box;margin:0;align-self:stretch;font:14px/1.5 var(--brand-body);
+ height:264px!important;min-height:264px;grid-template-rows:24px 66px 30px 6px 40px 24px;
+ transform:none!important;
+}
+body.dashboard5-theme.d6-style .portfolio-project-name{font-size:16px;line-height:1.4;font-weight:600;letter-spacing:normal}
+body.dashboard5-theme.d6-style .portfolio-project-subtitle,
+body.dashboard5-theme.d6-style .portfolio-project-meta,
+body.dashboard5-theme.d6-style .portfolio-updated{font-size:13px;line-height:1.5;color:#586579}
+body.dashboard5-theme.d6-style .portfolio-project .portfolio-status{font-size:13px}
+body.dashboard5-theme.d6-style .portfolio-updated .priority-tag{font-size:12px}
+body.dashboard5-theme.d6-style :is(.gate-table,.variant-table,.series-schedule-table,.sample-table) td{font-size:14px;line-height:1.6}
+body.dashboard5-theme.d6-style :is(.gate-table,.variant-table,.series-schedule-table,.sample-table) th{font-size:13px;font-weight:600}
+body.dashboard5-theme.d6-style :is(.report-form,.report-section){font-size:14px;line-height:1.6}
+
 /* Overview footer matches the approved reference, using the filtered cards.
    Global counts belong to the confirmation center rather than this footer. */
 body.dashboard5-theme.d6-style .health-snapshot{display:grid;grid-template-columns:1.65fr repeat(4,minmax(0,.9fr)) 1.5fr;align-items:center;gap:0;margin:20px 0 28px;padding:22px 20px;border:1px solid #dce3ef;border-radius:16px;background:linear-gradient(110deg,#fbfcff,#f2f5fc);box-shadow:none;min-width:0}
