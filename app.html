@@ -1750,7 +1750,7 @@ html[lang^="zh"] .dashboard5-theme :is(.health-matrix-head h2,.panel-head h2,.ga
 </style><style>.team-identity{font-size:13px;color:#465468;align-self:center;padding-inline:4px}body.readonly-dashboard #modeSwitch[hidden]{display:none}</style>
 <link rel="stylesheet" href="dashboard-polish.css?v=20261124-unified-title">
 <link rel="stylesheet" href="portfolio-layout.css?v=20261124-grid1">
-<link rel="stylesheet" href="design-system.css?v=20261124-workbench">
+<link rel="stylesheet" href="design-system.css?v=20261124-sidebar-actions">
 </head>
 <body class="dashboard5-theme d6-style readonly-dashboard">
 <script type="application/json" id="teamBootstrap"><!--ARMSTRONG_BOOTSTRAP--></script>
@@ -2083,7 +2083,12 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
     <span class="nav-section project-nav-head"><span data-i18n-zh="产品线" data-i18n-en="PRODUCT LINES">产品线</span></span>
     <div class="sidebar-projects" id="sidebarProjects"></div>
   </nav>
+  <div class="sidebar-bottom">
+    <details id="sidebarActions" class="sidebar-actions" open><summary title="操作 / Actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="white"/><circle cx="15" cy="17" r="3" fill="white"/></svg><span data-i18n-zh="操作与偏好" data-i18n-en="Actions & preferences">操作与偏好</span></summary>
+  <div class="dashboard-utility" id="dashboardUtility"><div class="actions"><div class="language-switch" role="group" aria-label="Language"><button type="button" data-lang="zh" onclick="setDashboardLanguage('zh')">中文</button><button type="button" data-lang="en" onclick="setDashboardLanguage('en')">EN</button></div><button class="btn" id="reviewSnapshotExport" type="button" hidden data-i18n-zh="导出评审数据" data-i18n-en="Export review data">导出评审数据</button><span id="teamIdentity" class="team-identity"></span><button id="teamLogout" class="btn" type="button" data-i18n-zh="退出登录" data-i18n-en="Sign out">退出登录</button><button class="btn presentation-home" id="presentationHome" type="button" hidden>返回总览</button><button class="btn presentation-toggle" id="presentationToggle" type="button" aria-pressed="false">演示模式</button><button class="btn mode-switch" id="modeSwitch" type="button"></button></div></div>
+    </details>
   <div class="sidebar-foot"><span>AF</span><div><b data-i18n-zh="Armstrong 团队" data-i18n-en="Armstrong Team">Armstrong 团队</b><small data-i18n-zh="产品开发" data-i18n-en="Product Development">产品开发</small></div></div>
+  </div>
 </aside>
 <div class="dashboard-stage">
   <nav class="dashboard-topbar"><div class="breadcrumb"><button type="button" class="sidebar-collapse-toggle" id="sidebarCollapseToggle" onclick="toggleDashboardSidebar()" aria-label="收起侧边栏" aria-expanded="true"><span></span><span></span><span></span></button><span>▣</span><b data-i18n-zh="看板" data-i18n-en="Dashboard">看板</b></div><div class="topbar-meta"><span data-i18n-zh="最后更新 · 2026年11月20日" data-i18n-en="Last updated · 20 Nov 2026">最后更新 · 2026年11月20日</span><i>A</i><i>N</i><i>T</i></div></nav>
@@ -2092,7 +2097,7 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
   <header class="header">
      <div><h1 data-i18n-zh="新品开发进度" data-i18n-en="Development Progress">新品开发进度</h1><p id="d6Headline" class="d6-headline"></p></div>
   </header>
-  <div class="dashboard-utility"><div class="actions"><div class="language-switch" role="group" aria-label="Language"><button type="button" data-lang="zh" onclick="setDashboardLanguage('zh')">中文</button><button type="button" data-lang="en" onclick="setDashboardLanguage('en')">EN</button></div><button class="btn" id="reviewSnapshotExport" type="button" hidden data-i18n-zh="导出评审数据" data-i18n-en="Export review data">导出评审数据</button><span id="teamIdentity" class="team-identity"></span><button id="teamLogout" class="btn" type="button" data-i18n-zh="退出登录" data-i18n-en="Sign out">退出登录</button><button class="btn presentation-home" id="presentationHome" type="button" hidden>返回总览</button><button class="btn presentation-toggle" id="presentationToggle" type="button" aria-pressed="false">演示模式</button><button class="btn mode-switch" id="modeSwitch" type="button"></button></div></div>
+  <div id="mobileUtilitySlot"></div>
   <script>(function(){var b=document.getElementById('modeSwitch'),t=window.dashboardText;if(TEAM.role==='viewer'){b.hidden=true;return;}if(window.DASHBOARD_PM_MODE){b.textContent=t('返回只读看板');b.onclick=function(){switchDashboardMode(false);};}else{b.textContent=t('进入 PM 维护');b.onclick=function(){switchDashboardMode(true);};}})();</script>
   </section>
   <section class="stats" id="stats"></section>
@@ -3835,6 +3840,20 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     location.replace(location.pathname);
   };
   projectSearch.value=readDashboardPreference('foil_dashboard_search')||'';
+  var lastActionsCollapsed=null;
+  function syncUtilityPlacement(){
+    var utility=document.getElementById('dashboardUtility'),side=document.getElementById('sidebarActions'),mobile=document.getElementById('mobileUtilitySlot');
+    var compact=window.matchMedia('(max-width:700px)').matches||document.body.classList.contains('presentation-mode');
+    var destination=compact?mobile:side;
+    if(utility.parentElement!==destination)destination.appendChild(utility);
+    var sidebar=document.querySelector('.app-sidebar');
+    var collapsed=document.body.classList.contains('sidebar-collapsed')||(!compact&&sidebar.getBoundingClientRect().width<120);
+    side.classList.toggle('actions-collapsed',collapsed);
+    if(collapsed!==lastActionsCollapsed){side.open=!collapsed;lastActionsCollapsed=collapsed;}
+  }
+  window.addEventListener('resize',syncUtilityPlacement);
+  new MutationObserver(syncUtilityPlacement).observe(document.body,{attributes:true,attributeFilter:['class']});
+  syncUtilityPlacement();
   render();
   var query=new URLSearchParams(location.search);
   var requestedView=query.get('view');
