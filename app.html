@@ -1749,6 +1749,7 @@ html[lang^="zh"] .dashboard5-theme :is(.health-matrix-head h2,.panel-head h2,.ga
 .reminder-message li {margin:8px 0}
 </style><style>.team-identity{font-size:13px;color:#465468;align-self:center;padding-inline:4px}body.readonly-dashboard #modeSwitch[hidden]{display:none}</style>
 <link rel="stylesheet" href="dashboard-polish.css?v=20261124-unified-title">
+<link rel="stylesheet" href="portfolio-layout.css?v=20261124-grid1">
 </head>
 <body class="dashboard5-theme d6-style readonly-dashboard">
 <script type="application/json" id="teamBootstrap"><!--ARMSTRONG_BOOTSTRAP--></script>
@@ -2911,31 +2912,41 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   };
   window.refreshPortfolioScrollControls=function(){document.querySelectorAll('.portfolio-scroll-shell').forEach(function(shell){window.updatePortfolioScroll(shell);window.bindPortfolioDrag(shell.querySelector('.portfolio-line-grid'));});};
   if(window.addEventListener)window.addEventListener('resize',function(){window.refreshPortfolioScrollControls();});
+  var portfolioLayout='grid';
+  window.setPortfolioLine=function(id){
+    document.getElementById('businessFilter').value=id;
+    document.getElementById('businessFilter').dispatchEvent(new Event('change'));
+  };
+  window.setPortfolioLayout=function(layout){portfolioLayout=layout==='list'?'list':'grid';renderExecutiveFocus();reapplyLang();};
   window.renderExecutiveFocus=function(){
     var english=window.DASHBOARD_LANG==='en';
     var rank={'阻塞':0,'已延误':0,'待确认':1,'待图档':1,'待排期':1,'进行中':2,'未开始':2,'已完成':3};
-    var kiteFamilies=typeof sampleState==='undefined'?[]:Array.from(new Set(sampleState.map(function(s){return s.family;})));
-    var lineSections=BUSINESS_LINES.map(function(line){
-      var items=seriesState.filter(function(p){return businessLineMatches(line.id,p.businessLine)&&(!PRIORITIES.includes(priorityFilter)||priorityValue(p.priority)===priorityFilter);}).map(function(p){
-        return {kind:'project',id:p.id,name:p.name,status:seriesStatus(p),priority:p.priority,risk:projectAtRisk(p),progress:seriesProgress(p),affected:affectedVariantCount(p),total:p.variants.length};
-      });
-      if(line.id==='boardwing'&&!PRIORITIES.includes(priorityFilter))kiteFamilies.forEach(function(family){var samples=sampleState.filter(function(s){return s.family===family;});items.push({kind:'sample',id:family,name:family,status:sampleFamilyStatus(family),progress:sampleFamilyProgress(family),affected:affectedSampleCount(family),total:samples.length});});
-      items.sort(function(a,b){return (prioritySort?comparePriority(a,b):0)||(rank[a.status]===undefined?9:rank[a.status])-(rank[b.status]===undefined?9:rank[b.status])||a.name.localeCompare(b.name);});
-      var cards=items.map(function(item){
-        var tone=item.status==='阻塞'||item.status==='已延误'?'danger':item.status==='待确认'||item.status==='待图档'||item.status==='待排期'?'warning':'good';
-        var action=dashboardAction(item.kind==='sample'?'setSampleFamily':'openProject',[item.id]);
-        var impact=english?item.affected+' / '+item.total+' affected':item.affected+' / '+item.total+' 个型号受影响';
-        return '<button type="button" class="health-tile '+tone+'" title="'+esc(item.name)+'" '+action+'><span class="health-name">'+esc(item.name)+'</span><span class="health-meta">'+(item.priority?priorityTag(item):'')+'<span>'+impact+'</span>'+(item.risk?scheduleRisk():'')+'</span><span class="health-result"><strong>'+item.progress+'%</strong><em>'+esc(item.status)+'</em></span></button>';
-      }).join('');
-      var label=english?line.en:line.name;
-      var count=cards?items.length+(english?(items.length===1?' project':' projects'):' 个项目'):(english?'No projects':'暂无项目');
-      return '<section class="portfolio-line"><div class="portfolio-line-label"><h3>'+esc(label)+'</h3><span>'+count+'</span></div>'+
-        (cards?'<div class="portfolio-scroll-shell"><div class="portfolio-line-grid" onscroll="updatePortfolioScroll(this.parentElement)">'+cards+'</div></div>':'')+'</section>';
+    var items=searchSeries().map(function(p){
+      var line=BUSINESS_LINES.find(function(l){return businessLineMatches(l.id,p.businessLine);})||BUSINESS_LINES[0];
+      return {id:p.id,kind:'project',name:p.name,owner:p.owner,line:line,status:seriesStatus(p),priority:p.priority,progress:seriesProgress(p),affected:affectedVariantCount(p),total:p.variants.length};
+    });
+    sampleOverviewGroups().forEach(function(entry){
+      var owners=Array.from(new Set(entry[1].map(function(s){return s.owner;}).filter(Boolean)));
+      items.push({id:entry[0],kind:'sample',name:entry[0],owner:owners.join(' / '),line:BUSINESS_LINES.find(function(l){return l.id==='boardwing';}),status:sampleFamilyStatus(entry[0]),progress:sampleFamilyProgress(entry[0]),affected:affectedSampleCount(entry[0]),total:entry[1].length});
+    });
+    items.sort(function(a,b){return (prioritySort?comparePriority(a,b):0)||(rank[a.status]===undefined?9:rank[a.status])-(rank[b.status]===undefined?9:rank[b.status])||a.name.localeCompare(b.name);});
+    var tabs=[{id:'',name:'全部项目',en:'All projects'}].concat(BUSINESS_LINES).map(function(line){
+      return '<button type="button" class="portfolio-tab '+(lineFilter===line.id?'active':'')+'" aria-pressed="'+(lineFilter===line.id)+'" '+dashboardAction('setPortfolioLine',[line.id])+'>'+esc(english?line.en:line.name)+'</button>';
     }).join('');
-    document.getElementById('executiveFocus').innerHTML=
-      '<section class="health-matrix-card"><div class="health-matrix-head"><h2>'+(english?'Portfolio Health Overview':'项目健康度总览')+'</h2></div><div class="portfolio-lines">'+lineSections+'</div></section>';
+    var icon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v9l9 5 9-5V8M12 13v9M7.5 5.5l9 5"/></svg>';
+    var cards=items.map(function(item){
+      var tone=item.status==='阻塞'||item.status==='已延误'?'danger':item.status==='待确认'||item.status==='待图档'||item.status==='待排期'?'warning':'good';
+      var progress=Math.max(0,Math.min(100,Number(item.progress)||0));
+      var action=dashboardAction(item.kind==='sample'?'setSampleFamily':'openProject',[item.id]);
+      var impact=item.affected+' / '+item.total+(english?' models affected':' 个型号受影响');
+      return '<button type="button" class="portfolio-project '+tone+'" '+action+' title="'+esc(item.name)+'"><span class="portfolio-card-top"><span class="portfolio-icon '+esc(item.line.id)+'">'+icon+'</span><span class="portfolio-status">'+esc(item.status)+'</span></span><span class="portfolio-project-name">'+esc(item.name)+'</span><span class="portfolio-percent">'+progress+'%</span><span class="portfolio-track" role="meter" aria-label="'+esc(item.name)+'" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'"><i style="width:'+progress+'%"></i></span><span class="portfolio-project-meta"><span class="portfolio-owner" title="'+esc(item.owner||'—')+'">'+(english?'Owner: ':'负责人：')+esc(item.owner||'—')+'</span><span>'+esc(impact)+'</span><span class="portfolio-category">'+esc(english?item.line.en:item.line.name)+'</span></span></button>';
+    }).join('');
+    var delayed=items.filter(function(x){return x.status==='已延误';}).length;
+    var blocked=items.filter(function(x){return x.status==='阻塞';}).length;
+    var affected=items.reduce(function(n,x){return n+x.affected;},0);
+    var summary=english?'Current selection · recorded status':'当前筛选范围 · 按已录入状态统计';
+    document.getElementById('executiveFocus').innerHTML='<section class="portfolio-board"><div class="portfolio-board-heading"><div><h2>'+(english?'Project Health Overview':'项目健康度总览')+'</h2><p>'+(english?'Track progress, identify risks, and review each project.':'追踪项目进度，识别风险，查看各型号的独立进展。')+'</p></div></div><div class="portfolio-controls"><div class="portfolio-tabs" role="group" aria-label="'+(english?'Product lines':'事业部筛选')+'">'+tabs+'</div><div class="portfolio-view-controls"><span>'+items.length+(english?' projects':' 个项目')+'</span><button type="button" aria-pressed="'+(portfolioLayout==='grid')+'" '+dashboardAction('setPortfolioLayout',['grid'])+'>'+(english?'Grid':'网格')+'</button><button type="button" aria-pressed="'+(portfolioLayout==='list')+'" '+dashboardAction('setPortfolioLayout',['list'])+'>'+(english?'List':'列表')+'</button></div></div><div class="portfolio-project-grid '+(portfolioLayout==='list'?'is-list':'')+'">'+(cards||'<p class="portfolio-empty">'+(english?'No matching projects. Adjust the filters to see more.':'没有符合筛选条件的项目，请调整筛选。')+'</p>')+'</div><div class="portfolio-insights"><div class="portfolio-insight-intro"><b>'+(english?'Project summary':'项目概况')+'</b><span>'+summary+'</span></div><div><b>'+items.length+'</b><span>'+(english?'Projects':'项目总数')+'</span></div><div><b>'+delayed+'</b><span>'+(english?'Delayed':'已延误')+'</span></div><div><b>'+blocked+'</b><span>'+(english?'Blocked':'阻塞')+'</span></div><div><b>'+affected+'</b><span>'+(english?'Affected models':'受影响型号')+'</span></div><button type="button" class="btn primary" '+dashboardAction('setView',['reports'])+'>'+(english?'View report':'查看报告')+'</button></div></section>';
     document.getElementById('confirmationLoadSummary').innerHTML=confirmationLoadHtml();
-    setTimeout(function(){window.refreshPortfolioScrollControls();},0);
   };
   function sampleOverviewGroups(){
     var groups=new Map(),input=document.getElementById('search'),q=input?input.value.trim().toLowerCase():'';
@@ -3658,6 +3669,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     view=v;dashboardFilter='all';gateApproverFilter='';gateSeriesFilter='';syncOverviewTabs();render();
   };
   window.renderDashboardResults=function(){
+    if(view==='overview')renderExecutiveFocus();
     main.innerHTML=view==='samples'?samplePlanHtml():view==='matrix'?matrixHtml():view==='reports'?reportsHtml():overviewHtml();
     reapplyLang();
   };
@@ -3666,13 +3678,12 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     var overview=view==='overview'||view==='matrix';
     document.getElementById('priorityControls').hidden=!overview;
     document.getElementById('workspaceFilters').hidden=view==='reports';
-    document.getElementById('stats').hidden=!overview;
+    document.getElementById('stats').hidden=view!=='matrix';
     var focusEl=document.getElementById('executiveFocus');
     if(focusEl)focusEl.hidden=view!=='overview';
     document.getElementById('confirmationLoadSummary').hidden=view!=='overview';
     presentationHome.hidden=!presentationState||view==='overview';
     if(overview)renderStats();
-    if(view==='overview')renderExecutiveFocus();
     renderDashboardResults();
   };
   var presentationState=null,ownedFullscreen=false;
