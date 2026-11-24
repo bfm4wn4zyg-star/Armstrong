@@ -1751,7 +1751,8 @@ html[lang^="zh"] .dashboard5-theme :is(.health-matrix-head h2,.panel-head h2,.ga
 <link rel="stylesheet" href="dashboard-polish.css?v=20261124-unified-title">
 <link rel="stylesheet" href="portfolio-layout.css?v=20261124-grid1">
 <link rel="stylesheet" href="design-system.css?v=20261124-sidebar-actions">
-<link rel="stylesheet" href="nimblify-system.css?v=20261124-sidebar-width">
+<link rel="stylesheet" href="nimblify-system.css?v=20261124-prerelease-fixes">
+<script src="release-safety.js?v=20261124-prerelease-fixes"></script>
 </head>
 <body class="dashboard5-theme d6-style readonly-dashboard">
 <script type="application/json" id="teamBootstrap"><!--ARMSTRONG_BOOTSTRAP--></script>
@@ -2117,7 +2118,18 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
   window.setDashboardLanguage=function(next){writeDashboardPreference('foil_dashboard_language',next);var u=new URL(location.href);u.searchParams.delete('lang');location.href=u.href;};
   document.addEventListener('DOMContentLoaded',function(){
     window.applyDashboardLanguage(document);
-    var pending=false;new MutationObserver(function(){if(pending)return;pending=true;requestAnimationFrame(function(){pending=false;window.applyDashboardLanguage(document);});}).observe(document.body,{childList:true,subtree:true});
+    var roots=new Set(),frame=0;
+    new MutationObserver(function(changes){
+      changes.forEach(function(change){change.addedNodes.forEach(function(node){
+        var element=node.nodeType===1?node:node.parentElement;
+        if(element&&!element.closest('script,style,textarea'))roots.add(element);
+      });});
+      if(!roots.size||frame)return;
+      frame=requestAnimationFrame(function(){
+        frame=0;var pending=Array.from(roots);roots.clear();
+        pending.filter(function(root){return !pending.some(function(other){return other!==root&&other.contains(root);});}).forEach(function(root){if(root.isConnected)window.applyDashboardLanguage(root);});
+      });
+    }).observe(document.body,{childList:true,subtree:true});
   });
 })();
 </script>
@@ -2157,7 +2169,6 @@ function writeDashboardPreference(key,value){try{localStorage.setItem(key,value)
   <section class="drawer"><div class="drawer-head"><div><h2 id="drawerTitle"></h2><div class="subtitle" id="drawerSub"></div></div><button class="close" onclick="closeDrawer()">×</button></div><div class="drawer-body" id="drawerBody"></div><div class="savebar"><button class="btn" onclick="closeDrawer()">关闭</button><button class="btn primary" onclick="saveProject()">保存更新</button></div></section>
 </div>
 <script>
-const STORE='foil_raci_dashboard_v2_2_demo';
 const PHASES=[
  {id:'concept',name:'设计图档与制造规格'},
  {id:'structure',name:'结构、打样与验证'},
@@ -2190,36 +2201,10 @@ const TEMPLATE=[
  ['graphics','产品包成品样寄送','Steven','Irri','Armie / Nathan','Nathan / Ulrica','Armie','产品包完成后立即']
 ];
 function makeMilestones(done,current,late){return TEMPLATE.map((x,i)=>({id:'m'+(i+1),phase:x[0],name:x[1],r:x[2],a:x[3],c:x[4],inf:x[5],sign:x[6],rule:x[7],status:i<done?'已完成':i===current?(late?'已延误':'进行中'):'未开始',due:i===current?(late?'2026-11-07':'2026-11-25'):'',actual:i<done?'2026-10-'+String(Math.min(28,5+i)).padStart(2,'0'):'',next:i===current?'确认交付物并取得最终签署':''}))}
-const SEED=[
- {id:'gp',name:'Glide Performance GP 85/105/125',part:'前翼',priority:'最高',owner:'Ulrica',phase:'structure',health:'已延误',updated:'2026-11-03',milestones:makeMilestones(3,3,true),samples:[['GP 85 / RT85-8','粗胚','3','开模中','2026-11-07'],['GP 105 / RT105-8','粗胚','3','铺层进行中','2026-11-21'],['GP 125 / RT125-8','粗胚','3','铺层进行中','2026-11-21']]},
- {id:'p14588',name:'P14 588 (DWP MKII 588-1.0)',part:'前翼',priority:'高',owner:'Teo',phase:'structure',health:'进行中',updated:'2026-11-18',milestones:makeMilestones(7,7,false),samples:[['P14 588','粗胚','3','制作中','2026-11-25']]},
- {id:'p14738',name:'P14 738 (DWP MKII 738-1.0)',part:'前翼',priority:'高',owner:'Teo',phase:'structure',health:'阻塞',updated:'2026-11-17',milestones:makeMilestones(8,9,false),samples:[['P14 738','测试样','2','待确认测试参数','2026-11-22']]},
- {id:'tail105',name:'DWPTail 105-8 (RT 105-7)',part:'尾翼',priority:'中',owner:'Rita',phase:'concept',health:'进行中',updated:'2026-11-19',milestones:makeMilestones(0,0,false),samples:[]},
- {id:'fd',name:'FD 电缆套装',part:'配件',priority:'中',owner:'Rita',phase:'structure',health:'待签署',updated:'2026-11-18',milestones:makeMilestones(15,15,false),samples:[['FD 电缆套装','产前样','5','待签署','2026-11-21']]},
- {id:'ha680',name:'HA MKIII 680',part:'前翼',priority:'中',owner:'Armie',phase:'graphics',health:'进行中',updated:'2026-11-16',milestones:makeMilestones(23,23,false),samples:[['HA MKIII 680','成品样','3','待水标图档','2026-11-30']]}
-];
-let state=load(),view='overview',activeId=null;
-function load(){try{let x=JSON.parse(localStorage.getItem(STORE));if(Array.isArray(x))return x}catch(e){}return structuredClone(SEED)}
-function persist(){localStorage.setItem(STORE,JSON.stringify(state))}
-function resetDemo(){state=structuredClone(SEED);persist();render()}
+let view='overview',activeId=null;
 function esc(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function initials(n){return String(n).split(/[ /,]/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'—'}
-function cls(s){return s==='已完成'?'done':s==='进行中'?'doing':s==='已延误'?'late':s==='阻塞'?'blocked':s==='待签署'?'waiting':'todo'}
-function cur(p){return p.milestones.find(m=>!['已完成','不适用'].includes(m.status))||p.milestones.at(-1)}
-function progress(p){return Math.round(p.milestones.filter(m=>m.status==='已完成').length/p.milestones.length*100)}
 function phaseName(id){return PHASES.find(x=>x.id===id)?.name||id}
-function filtered(){let q=document.getElementById('search')?.value.trim().toLowerCase()||'';if(!q)return state;return state.filter(p=>{let m=cur(p);return [p.name,p.owner,m.name,m.r,m.a,m.sign].join(' ').toLowerCase().includes(q)})}
-function setView(v){view=v;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===v));render()}
-function render(){renderStats();document.getElementById('main').innerHTML=view==='matrix'?matrixHtml():overviewHtml()}
-function renderStats(){let delayed=state.filter(p=>['已延误','阻塞'].includes(p.health)).length;let sign=state.filter(p=>p.health==='待签署').length;let active=state.filter(p=>progress(p)<100).length;let due=state.flatMap(p=>p.milestones).filter(m=>m.due>='2026-11-20'&&m.due<='2026-11-27'&&m.status!=='已完成').length;let d=[[state.length,'项目总数',''],[active,'进行中项目',''],[delayed,'延误或阻塞','danger'],[sign,'等待最终签署','warn'],[due,'7天内到期','ok']];document.getElementById('stats').innerHTML=d.map(x=>`<div class="stat ${x[2]}"><div class="n">${x[0]}</div><div class="l">${x[1]}</div></div>`).join('')}
-function overviewHtml(){let ps=filtered();return `<section class="panel"><div class="panel-head"><div><h2>项目状态总览</h2><p>只显示当前需要推动的里程碑，点击项目查看完整 RACI 与打样任务</p></div><div class="legend"><span><i class="dot red"></i>延误/阻塞</span><span><i class="dot amber"></i>待签署</span><span><i class="dot green"></i>正常推进</span></div></div><table><thead><tr><th>项目 / 型号</th><th>当前阶段</th><th>当前关键里程碑</th><th>执行人 R</th><th>负责人 A</th><th>下一截止日</th><th>最终签署</th><th>状态</th><th>整体进度</th></tr></thead><tbody>${ps.map(p=>{let m=cur(p),pc=progress(p);return `<tr onclick="openProject('${p.id}')"><td><div class="project">${esc(p.name)}</div><div class="meta">${p.part} · ${p.priority}优先级 · 更新 ${p.updated}</div></td><td><span class="phase">${phaseName(m.phase)}</span></td><td><b>${esc(m.name)}</b><div class="meta">${esc(m.next||m.rule)}</div></td><td><div class="person"><i class="avatar">${initials(m.r)}</i>${esc(m.r)}</div></td><td>${esc(m.a)}</td><td>${m.due||'依前置节点'}</td><td>${esc(m.sign)}</td><td><span class="status ${cls(p.health)}">${p.health}</span></td><td><div class="bar"><i style="width:${pc}%"></i></div><div class="pct">${pc}% · ${p.milestones.filter(x=>x.status==='已完成').length}/${p.milestones.length}</div></td></tr>`}).join('')}</tbody></table></section><section style="margin-top:15px"><div class="exceptions"><div class="ex"><h3>需要立即处理</h3>${state.filter(p=>['已延误','阻塞'].includes(p.health)).map(p=>`<div class="ex-item"><div class="ex-title">${p.name}</div><div class="ex-note">${cur(p).name} · ${cur(p).a}</div></div>`).join('')||'<div class="tiny">暂无</div>'}</div><div class="ex"><h3>等待最终签署</h3>${state.filter(p=>p.health==='待签署').map(p=>`<div class="ex-item"><div class="ex-title">${p.name}</div><div class="ex-note">签署人：${cur(p).sign}</div></div>`).join('')||'<div class="tiny">暂无</div>'}</div><div class="ex"><h3>本周样品节点</h3>${state.flatMap(p=>p.samples.map(s=>({p:p.name,s}))).filter(x=>x.s[4]<='2026-11-27').slice(0,4).map(x=>`<div class="ex-item"><div class="ex-title">${x.s[0]} · ${x.s[1]}</div><div class="ex-note">${x.s[3]} · ${x.s[4]}</div></div>`).join('')}</div></div></section>`}
-function matrixHtml(){let p=filtered()[0]||state[0];return `<section class="panel"><div class="panel-head"><div><h2>${esc(p.name)} · 里程碑矩阵</h2><p>R 执行、A 唯一责任、C 咨询、I 告知、Final Sign Off 最终签署</p></div><button class="btn" onclick="openProject('${p.id}')">打开项目详情</button></div><div class="matrix"><table><thead><tr><th>阶段</th><th>关键里程碑</th><th>R</th><th>A</th><th>C</th><th>I</th><th>最终签署</th><th>时间规则</th><th>状态</th></tr></thead><tbody>${PHASES.map(ph=>`<tr class="phase-row"><td colspan="9">${ph.name}</td></tr>${p.milestones.filter(m=>m.phase===ph.id).map(m=>`<tr><td></td><td class="mile"><b>${esc(m.name)}</b>${m.a.includes('/')&&m.name.includes('工装')?'<div class="warning">注意：此节点存在两个 Accountable，建议确认唯一负责人</div>':''}</td><td>${esc(m.r)}</td><td>${esc(m.a)}</td><td>${esc(m.c)}</td><td>${esc(m.inf)}</td><td>${esc(m.sign)}</td><td class="tiny">${esc(m.rule)}</td><td><span class="status ${cls(m.status)}">${m.status}</span></td></tr>`).join('')}`).join('')}</tbody></table></div></section>`}
-function openProject(id){activeId=id;let p=state.find(x=>x.id===id);if(!p)return;document.getElementById('drawerTitle').textContent=p.name;document.getElementById('drawerSub').textContent=`${p.part} · ${p.priority}优先级 · 项目跟进人 ${p.owner}`;document.getElementById('drawerBody').innerHTML=drawerHtml(p);document.getElementById('mask').classList.add('show')}
-function drawerHtml(p){let m=cur(p),pc=progress(p);return `<div class="summary-grid"><div class="summary-box"><span>当前阶段</span><b>${phaseName(m.phase)}</b></div><div class="summary-box"><span>当前负责人 A</span><b>${esc(m.a)}</b></div><div class="summary-box"><span>待签署人</span><b>${esc(m.sign)}</b></div><div class="summary-box"><span>整体进度</span><b>${pc}%</b></div></div><div class="phase-nav">${PHASES.map((x,i)=>`<button class="phase-chip ${x.id===m.phase?'active':''}" onclick="document.getElementById('phase-${x.id}').scrollIntoView({behavior:'smooth'})">${i+1}. ${x.name}</button>`).join('')}</div>${PHASES.map(ph=>`<h3 id="phase-${ph.id}" style="font-size:14px;margin:19px 2px 9px">${ph.name}</h3>${p.milestones.filter(x=>x.phase===ph.id).map((x,i)=>mileCard(x,p)).join('')}`).join('')}<h3 class="sample-title">关联打样任务</h3><div class="samples">${p.samples.length?`<table><thead><tr><th>型号</th><th>类型</th><th>数量</th><th>状态</th><th>承诺日期</th></tr></thead><tbody>${p.samples.map(s=>`<tr><td>${esc(s[0])}</td><td>${esc(s[1])}</td><td>${esc(s[2])}</td><td>${esc(s[3])}</td><td>${esc(s[4])}</td></tr>`).join('')}</tbody></table>`:'<div class="tiny" style="padding:16px">暂无关联打样任务</div>'}</div>`}
-function mileCard(m,p){let idx=p.milestones.indexOf(m)+1;let opts=['未开始','进行中','待签署','阻塞','已延误','已完成','不适用'].map(s=>`<option ${s===m.status?'selected':''}>${s}</option>`).join('');return `<div class="mile-card"><div class="mile-top"><div class="num">${String(idx).padStart(2,'0')}</div><div><div class="mile-title">${esc(m.name)}</div><div class="raci"><span><b>R</b> ${esc(m.r)}</span><span><b>A</b> ${esc(m.a)}</span><span><b>C</b> ${esc(m.c)}</span><span><b>I</b> ${esc(m.inf)}</span><span><b>签署</b> ${esc(m.sign)}</span></div><div class="tiny" style="margin-top:6px">时间规则：${esc(m.rule)}</div>${m.a.includes('/')&&m.name.includes('工装')?'<div class="warning">RACI规则要求 A 唯一；此节点需要确认 Franklin 或 Armand 谁最终负责。</div>':''}</div><span class="status ${cls(m.status)}">${m.status}</span></div><div class="mile-edit"><div><label>状态</label><select data-mid="${m.id}" data-k="status">${opts}</select></div><div><label>计划完成日</label><input type="date" value="${m.due}" data-mid="${m.id}" data-k="due"></div><div><label>实际完成日</label><input type="date" value="${m.actual}" data-mid="${m.id}" data-k="actual"></div><div><label>下一步动作</label><input value="${esc(m.next)}" data-mid="${m.id}" data-k="next" placeholder="写清动作、交付物或阻塞原因"></div></div></div>`}
-function closeDrawer(){document.getElementById('mask').classList.remove('show');activeId=null}
-function saveProject(){let p=state.find(x=>x.id===activeId);if(!p)return;document.querySelectorAll('[data-mid]').forEach(el=>{let m=p.milestones.find(x=>x.id===el.dataset.mid);if(m)m[el.dataset.k]=el.value});p.updated='2026-11-20';let c=cur(p);p.phase=c.phase;p.health=c.status==='已延误'?'已延误':c.status==='阻塞'?'阻塞':c.status==='待签署'?'待签署':'进行中';persist();closeDrawer();render()}
-function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='水翼项目看板_RACI_V2备份.json';a.click();URL.revokeObjectURL(a.href)}
 </script>
 <script>
 (function(){
@@ -2308,7 +2293,11 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   ];
 
   function clone(x){return JSON.parse(JSON.stringify(x));}
-  function loadRecords(key){return clone(TEAM.state[teamBucket(key)].records);}
+  function loadRecords(key,unusedSeed,validate){
+    var kind=teamBucket(key),records=ArmstrongSafety.validateBucket(kind,TEAM.state[kind]);
+    if(!records.every(validate)){unreadableRecords.add(kind);throw Error('Invalid shared records: '+kind);}
+    return clone(records);
+  }
   function teamBucket(key){return key===SERIES_STORE?'series':'samples';}
   function loadSeries(){
     function validMilestone(m){return m&&typeof m.name==='string';}
@@ -2403,6 +2392,11 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
       Object.assign(record,milestoneSummary(merged),{currentMilestoneId:merged.id});
     }
   }
+  function archiveMilestones(record,keep){
+    var removed=record.milestones.filter(function(m){return !keep(m);});
+    if(removed.length)record.retiredMilestones=(record.retiredMilestones||[]).concat(clone(removed));
+    record.milestones=record.milestones.filter(keep);
+  }
   function normalizeWorkflow(p){
     if(!p.releaseDate)p.releaseDate='';
     if(!PRIORITIES.includes(p.priority))p.priority='中';
@@ -2410,13 +2404,13 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     if(!p.businessLine)p.businessLine=p.part==='配件系列'?'accessories':'hydrofoil';
     if(p.phase==='cost')p.phase='graphics';
     if(!Array.isArray(p.milestones)) return;
-    p.milestones=p.milestones.filter(function(m){
+    archiveMilestones(p,function(m){
       return m.phase!=='cost'&&m.name!=='成本估算与利润分析'&&m.name!=='大货方案与成本最终签署'&&m.name!=='产品制造规格文档'&&m.name.indexOf('3D打印外形确认')!==0;
     });
     p.milestones.forEach(function(m){
       if(m.name==='内部产品图修改与确认'){
         m.name='内部产品图修改与确认（可选3D打印效果验证）';
-        m.r='Wind / Franklin';
+        if(!String(m.r||'').trim())m.r='Wind / Franklin';
         m.rule='收到产品图后尽快；必要时同步3D打印查看外形效果';
       }
       if(m.name==='首样粗胚制作并寄送'){
@@ -2425,8 +2419,8 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
       }
     });
     (p.variants||[]).forEach(function(v){
-      if(Array.isArray(v.milestones))v.milestones=v.milestones.filter(function(m){return m.phase!=='cost'&&m.name!=='成本估算与利润分析'&&m.name!=='大货方案与成本最终签署';});
-      if(v.node==='内部产品图修改与确认'){v.node='内部产品图修改与确认（可选3D打印效果验证）';v.r='Wind / Franklin';}
+      if(Array.isArray(v.milestones))archiveMilestones(v,function(m){return m.phase!=='cost'&&m.name!=='成本估算与利润分析'&&m.name!=='大货方案与成本最终签署';});
+      if(v.node==='内部产品图修改与确认'){v.node='内部产品图修改与确认（可选3D打印效果验证）';if(!String(v.r||'').trim())v.r='Wind / Franklin';}
       if(v.node==='首样粗胚制作并寄送')v.node='首样粗胚制作（寄送可选）';
       if(!Array.isArray(v.milestones)||!v.milestones.length){
         var currentIndex=p.milestones.findIndex(function(m){var base=m.name.split('（')[0];return m.name===v.node||m.name.indexOf(v.node)>=0||v.node.indexOf(base)>=0||(isLegacyTestName(m.name)&&isLegacyTestName(v.node));});
@@ -2623,35 +2617,44 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   var sharedWritePending=false;
   async function persistDashboard(key,value){
     if(sharedWritePending||READ_ONLY)return false;
-    var kind=teamBucket(key),serverRecord=TEAM.state[kind];
-    sharedWritePending=true;
+    var kind=teamBucket(key),serverRecord=TEAM.state[kind],records;
     var english=window.DASHBOARD_LANG==='en';
+    try{
+      ArmstrongSafety.validateChanges(kind,value,validationBaselines[kind]);
+      records=ArmstrongSafety.prepareRecords(kind,value,serverRecord.records,TEAM.role);
+      ArmstrongSafety.validateBucket(kind,{revision:serverRecord.revision,records:records});
+    }catch(error){alert((english?'Cannot save: ':'无法保存：')+error.message);return false;}
+    sharedWritePending=true;
+    var save=document.querySelector('.savebar .btn.primary'),label=save.textContent;
+    save.disabled=true;save.textContent=english?'Saving…':'正在保存…';
+    document.getElementById('drawerBody').setAttribute('aria-busy','true');
     try{
       var response=await fetch(window.ARMSTRONG_API_BASE+'/api/'+kind,{
         method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':TEAM.csrf,'Authorization':'Bearer '+window.ARMSTRONG_SESSION_TOKEN},
-        body:JSON.stringify({revision:serverRecord.revision,records:value}),
-        signal:AbortSignal.timeout(15000)
+        body:JSON.stringify({revision:serverRecord.revision,records:records}),signal:AbortSignal.timeout(15000)
       });
       if(response.ok){
-        serverRecord.revision=(await response.json()).revision;
-        return true;
+        var result=await response.json();
+        if(!Number.isInteger(result.revision)||result.revision<serverRecord.revision)throw Error('Invalid save acknowledgement');
+        serverRecord.revision=result.revision;serverRecord.records=clone(records);
+        validationBaselines[kind]=clone(value);return true;
       }
       if(response.status===409){
-        alert(english?'Another team member saved a change. Copy your edits and refresh before saving again.':'其他同事已保存更新。请先复制本次录入内容，再刷新页面重新编辑。');
+        alert(english?'Another team member saved a change. Your form is retained. Copy your edits and refresh before saving again.':'其他同事已保存更新。表单仍保留，请先复制本次录入内容，再刷新页面重新编辑。');
       }else if(response.status===401||response.status===403){
         alert(english?'You are signed out or this account cannot save this change.':'登录已过期，或当前账号没有这项修改权限。');
-      }else{
-        alert(english?'The server could not save this change.':'服务器未能保存本次修改。');
-      }
+      }else{alert(english?'The server could not save this change. Your form is retained.':'服务器未能保存本次修改，表单内容仍保留。');}
     }catch(error){
-      alert(english?'The server did not confirm the save. Copy your edits and refresh to check the current data.':'未收到服务器的保存确认。请先复制本次录入内容，再刷新核对数据。');
+      alert(english?'The server did not confirm the save. Your form is retained. Copy your edits and refresh to check the current data.':'未收到服务器的保存确认，表单内容仍保留。请先复制本次录入内容，再刷新核对数据。');
     }finally{
-      sharedWritePending=false;
+      sharedWritePending=false;save.disabled=false;save.textContent=label;
+      document.getElementById('drawerBody').removeAttribute('aria-busy');
     }
     return false;
   }
   document.addEventListener('click',function(event){
-    if(sharedWritePending){event.preventDefault();event.stopImmediatePropagation();}
+    var changing=event.target===document.getElementById('mask')||event.target.closest('.drawer button,[data-dashboard-action],#workspaceNewProject,#modeSwitch,#presentationToggle');
+    if(sharedWritePending&&changing){event.preventDefault();event.stopImmediatePropagation();}
   },true);
   function saveSeries(){return persistDashboard(SERIES_STORE,seriesState);}
   seriesState.forEach(normalizeWorkflow);
@@ -2782,11 +2785,11 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     return '';
   }
   function statusClass(status){
-    if(status==='已完成') return 'done';
-    if(status==='进行中') return 'doing';
-    if(status==='已延误') return 'late';
-    if(status==='阻塞') return 'blocked';
-    if(status==='待确认'||status==='暂停'||status==='待图档'||status==='待排期') return 'waiting';
+    if(status==='已完成')return 'done';
+    if(['进行中','制作中','开模中'].includes(status))return 'doing';
+    if(status==='已延误')return 'late';
+    if(status==='阻塞')return 'blocked';
+    if(['待确认','待签署','暂停','待图档','待排期','待处理','待归档','资料准备中'].includes(status))return 'waiting';
     return 'todo';
   }
   function nextDue(p){
@@ -2897,26 +2900,8 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
       '<strong class="n">'+value+'</strong><span class="d6-kpi-detail">'+esc(detail)+'</span></button>';
   }
   window.renderStats=function(){
-    var families=Array.from(new Set(sampleState.map(function(sample){return sample.family;})));
-    var statuses=seriesState.map(seriesStatus).concat(families.map(sampleFamilyStatus));
-    var models=seriesState.flatMap(function(p){return p.variants;}).concat(sampleState);
-    var lines=new Set(seriesState.map(function(p){return p.businessLine==='surfboard'||p.businessLine==='kite'?'boardwing':p.businessLine;}));if(families.length)lines.add('boardwing');
-    var affected=seriesState.reduce(function(total,p){return total+affectedVariantCount(p);},0)+
-      families.reduce(function(total,f){return total+affectedSampleCount(f);},0);
     var pending=allApprovals().filter(function(x){return x.gate.status==='待确认';});
-    var waits=pending.map(function(x){return waitingDays(x.gate);}).filter(function(days){return days!==null;});
-    function isRisk(status){return status==='阻塞'||status==='已延误';}
-    var active=statuses.filter(function(status){return status!=='已完成';}).length;
-    var risk=statuses.filter(isRisk).length;
-    var metrics=[
-      [statuses.length,'产品系列','all','series',d6MetricText('涉及 {count} 个事业部',{count:lines.size})],
-      [models.length,'尺寸/型号','models','models',d6MetricText('{count} 个型号受影响',{count:affected})],
-      [active,'未完成系列','active','active',d6MetricText('{count} 个型号进行中',{count:models.filter(function(m){return m.status==='进行中';}).length})],
-      [pending.length,'等待确认中','waiting','warn',waits.length?d6MetricText('最长等待 {count} 天',{count:Math.max.apply(null,waits)}):t(pending.length?'暂无有效等待日期':'当前没有等待确认的事项。')],
-      [risk,'延误或阻塞','blocked','danger',d6MetricText('{count} 个型号延误或阻塞',{count:models.filter(function(m){return isRisk(m.status);}).length})]
-    ];
-    var pendingBadge=document.getElementById('pendingBadge');pendingBadge.hidden=!pending.length;pendingBadge.textContent=pending.length;
-    document.getElementById('d6Headline').textContent=d6MetricText('{active} 个系列未完成 · {pending} 项待确认 · {risk} 个系列延误或阻塞',{active:active,pending:pending.length,risk:risk});
+    var badge=document.getElementById('pendingBadge');badge.hidden=!pending.length;badge.textContent=pending.length;
   };
   function confirmationLoadHtml(){
     var people=Object.create(null),pending=allApprovals().filter(function(x){return x.gate.status==='待确认';});
@@ -3447,6 +3432,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     render();
   };
   window.closeDrawer=function(){
+    if(sharedWritePending)return;
     document.getElementById('mask').classList.remove('show');
     activeId=null;
     activeVariantName=null;
@@ -3491,9 +3477,10 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     return loadRecords(SAMPLE_STORE,SAMPLE_SEED,function(s){return s&&typeof s.id==='string'&&typeof s.family==='string';});
   }
   var sampleState=loadSamples(),sampleFilter='全部',sampleFamilyFilter='',activeSampleId=null;
+  var validationBaselines={series:clone(seriesState),samples:clone(sampleState)};
   function safePercent(value){return Math.max(0,Math.min(100,Number(value)||0));}
   function saveSamples(){return persistDashboard(SAMPLE_STORE,sampleState);}
-  function sampleClass(s){if(s==='已完成')return 'completed';if(s==='进行中')return 'production';if(s==='已延误')return 'overdue';if(s==='待图档'||s==='待排期'||s==='待处理')return 'waiting';return 'tbd';}
+  function sampleClass(s){if(s==='已完成')return 'completed';if(['进行中','制作中','开模中'].includes(s))return 'production';if(s==='已延误'||s==='阻塞')return 'overdue';if(['待图档','待排期','待处理','待确认','待签署'].includes(s))return 'waiting';return 'tbd';}
   function sampleFiltered(){
     var q=(document.getElementById('search').value||'').trim().toLowerCase();
     return sampleState.filter(function(s){
@@ -3520,10 +3507,13 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     return match?match[0]:s.sample;
   }
   function sampleGroupStatus(items){
+    if(!items.length)return '未开始';
+    if(items.some(function(s){return s.status==='阻塞';}))return '阻塞';
     if(items.some(function(s){return s.status==='已延误';}))return '已延误';
-    if(items.some(function(s){return s.status==='待图档'||s.status==='待排期';}))return '待处理';
-    if(items.some(function(s){return s.status==='进行中';}))return '进行中';
-    return '已完成';
+    if(items.some(function(s){return ['待图档','待排期','待处理','待确认','待签署'].includes(s.status);}))return '待处理';
+    if(items.every(function(s){return s.status==='已完成';}))return '已完成';
+    if(items.some(function(s){return ['进行中','制作中','开模中'].includes(s.status);}))return '进行中';
+    return '未开始';
   }
   function samplePlanHtml(){
     var filtered=sampleFiltered(),groups=Object.create(null);
@@ -3590,7 +3580,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     return originalSaveProject();
   };
   var originalCloseDrawer=window.closeDrawer;
-  window.closeDrawer=function(){activeSampleId=null;originalCloseDrawer();};
+  window.closeDrawer=function(){if(sharedWritePending)return;activeSampleId=null;originalCloseDrawer();};
   window.resetDemo=function(){if(READ_ONLY)return;alert(window.DASHBOARD_LANG==='en'?'Demo reset is disabled to protect saved project data.':'为保护已维护的数据，已停用演示重置。');};
   var originalExportData=window.exportData;
   window.exportData=function(){
@@ -3844,10 +3834,14 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     view=v;dashboardFilter='all';gateApproverFilter='';gateSeriesFilter='';syncOverviewTabs();render();
     window.scrollTo(0,0);
   };
+  var searchFrame=0;
   window.searchDashboardProjects=function(value){
-    writeDashboardPreference('foil_dashboard_search',value);
-    if(view!=='overview'){view='overview';syncOverviewTabs();render();}
-    else renderDashboardResults();
+    clearTimeout(searchFrame);
+    searchFrame=setTimeout(function(){
+      writeDashboardPreference('foil_dashboard_search',value);
+      if(view!=='overview'){view='overview';syncOverviewTabs();render();}
+      else renderDashboardResults();
+    },150);
   };
   new MutationObserver(function(){decorateSharedTables();}).observe(document.getElementById('drawerBody'),{childList:true,subtree:true});
   window.renderDashboardResults=function(){
@@ -3997,5 +3991,6 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
 
 
 </script>
+<script src="release-ui.js?v=20261124-prerelease-fixes"></script>
 </body>
 </html>

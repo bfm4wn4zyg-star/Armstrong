@@ -27,18 +27,28 @@ button{width:100%;height:46px;margin-top:20px;border:0;border-radius:10px;backgr
   </form>
   <div class="loading" id="loading">正在载入共享看板…<br>Loading shared dashboard…</div>
 </main>
+<script src="deployment-config.js?v=20261124-prerelease-fixes"></script>
+<script src="release-safety.js?v=20261124-prerelease-fixes"></script>
 <script>
 (function(){
   'use strict';
-  var API_BASE='https://collectables-theme-providence-eyes.trycloudflare.com';
+  var API_BASE='';
+  try{
+    var apiURL=new URL(window.ARMSTRONG_DEPLOY_CONFIG.apiBase);
+    if(apiURL.protocol!=='https:'||apiURL.username||apiURL.password||apiURL.pathname!=='/'||apiURL.search||apiURL.hash)throw Error('API origin');
+    API_BASE=apiURL.origin;
+  }catch(configError){document.getElementById('loginError').textContent='接口地址配置无效，请联系管理员。 Invalid API configuration.';document.getElementById('loginButton').disabled=true;return;}
   var TOKEN_KEY='armstrong_shared_session_v1';
   var panel=document.getElementById('loginPanel'),form=document.getElementById('loginForm'),button=document.getElementById('loginButton'),error=document.getElementById('loginError'),loading=document.getElementById('loading');
   function token(){try{return sessionStorage.getItem(TOKEN_KEY)||'';}catch(e){return '';}}
   function remember(value){try{if(value)sessionStorage.setItem(TOKEN_KEY,value);else sessionStorage.removeItem(TOKEN_KEY);}catch(e){}}
   function message(text){error.textContent=text||'';}
   function busy(active){button.disabled=active;panel.classList.toggle('loading-state',active);loading.classList.toggle('show',active);}
+  var retry=document.createElement('button');retry.type='button';retry.textContent='重试连接 / Retry';retry.hidden=true;
+  retry.addEventListener('click',function(){location.reload();});panel.appendChild(retry);
   async function openDashboard(data,sessionToken){
-    var response=await fetch('./app.html?v=20261124-sidebar-width',{cache:'no-store'});
+    ArmstrongSafety.validateBootstrap(data);
+    var response=await fetch('./app.html?v=20261124-prerelease-fixes',{cache:'no-store',signal:AbortSignal.timeout(15000)});
     if(!response.ok)throw Error('app');
     var source=await response.text();
     var bootstrap=JSON.stringify(data).replace(/</g,'\\u003c');
@@ -54,7 +64,7 @@ button{width:100%;height:46px;margin-top:20px;border:0;border-radius:10px;backgr
       if(response.status===401||response.status===403){remember('');document.documentElement.classList.remove('resume-state');return;}
       if(!response.ok)throw Error('bootstrap');
       await openDashboard(await response.json(),sessionToken);
-    }catch(e){document.documentElement.classList.remove('resume-state');busy(false);message('暂时无法连接共享服务器，请稍后重试。 Unable to reach the shared server.');}
+    }catch(e){document.documentElement.classList.remove('resume-state');busy(false);retry.hidden=false;message('无法安全载入共享看板，请重试或联系管理员。 Unable to load the shared workspace safely.');}
   }
   form.addEventListener('submit',async function(event){
     event.preventDefault();message('');button.disabled=true;
@@ -67,7 +77,7 @@ button{width:100%;height:46px;margin-top:20px;border:0;border-radius:10px;backgr
       var bootstrapResponse=await fetch(API_BASE+'/api/bootstrap',{headers:{Authorization:'Bearer '+data.token},cache:'no-store',signal:AbortSignal.timeout(15000)});
       if(!bootstrapResponse.ok)throw Error('bootstrap');
       await openDashboard(await bootstrapResponse.json(),data.token);
-    }catch(e){busy(false);button.disabled=false;message('登录服务暂时不可用，请稍后重试。 Sign-in service is unavailable.');}
+    }catch(e){busy(false);button.disabled=false;retry.hidden=false;message('看板暂时无法载入，请重试或联系管理员。 The workspace could not be loaded. Please retry.');}
   });
   resume();
 })();

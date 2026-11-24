@@ -244,7 +244,9 @@ body.dashboard5-theme.d6-style:not(.presentation-mode)[data-workspace-view="samp
 }
 @media(max-width:800px){
  body.dashboard5-theme.d6-style .workspace-account-copy{display:none}
- body.dashboard5-theme.d6-style .global-search{width:100%}
+ body.dashboard5-theme.d6-style .global-search{flex:1 1 0;width:auto;min-width:0}
+ body.dashboard5-theme.d6-style .workspace-account{flex:0 0 auto}
+ body.dashboard5-theme.d6-style .sidebar-collapse-toggle{flex-shrink:0}
  body.dashboard5-theme.d6-style .global-snapshot .stats{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px}
  body.dashboard5-theme.d6-style .global-snapshot .d6-kpi{border:0;padding:8px;min-height:80px}
  body.dashboard5-theme.d6-style .portfolio-tabs{gap:16px}

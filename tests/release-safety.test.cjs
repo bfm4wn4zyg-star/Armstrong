@@ -1,0 +1,40 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const root=require('node:path').resolve(__dirname,'..');
+const safety=require(root+'/release-safety.js');
+const app=fs.readFileSync(root+'/app.html','utf8');
+let passed=0;
+function test(name,run){run();passed++;process.stdout.write('PASS '+name+'\n');}
+const clone=x=>JSON.parse(JSON.stringify(x));
+const m={id:'m1',name:'Gate',phase:'concept',status:'进行中',due:'',actual:''};
+const p={id:'p1',name:'Test',part:'前翼系列',owner:'Custom owner',priority:'中',businessLine:'hydrofoil',milestones:[m],variants:[{name:'85',node:'Gate',status:'进行中',milestones:[clone(m)]}],approvals:[],samples:[]};
+const bucket=records=>({revision:1,records});
+test('accept empty buckets',()=>safety.validateBucket('series',bucket([])));
+test('reject null records',()=>assert.throws(()=>safety.validateBucket('series',bucket([null]))));
+test('reject undefined bucket',()=>assert.throws(()=>safety.validateBucket('series',undefined)));
+test('reject duplicate IDs',()=>assert.throws(()=>safety.validateBucket('series',bucket([p,p]))));
+test('accept valid records',()=>safety.validateBucket('series',bucket([p])));
+test('reject malformed bootstrap',()=>assert.throws(()=>safety.validateBootstrap({state:{}})));
+test('valid leap day',()=>assert.equal(safety.validDate('2024-02-29'),true));
+test('invalid calendar day',()=>assert.equal(safety.validDate('2026-02-29'),false));
+test('new completion requires actual date',()=>{const n=clone(p);n.variants[0].milestones[0].status='已完成';assert.throws(()=>safety.validateChanges('series',[n],[p]));});
+test('completion with actual date accepted',()=>{const n=clone(p);Object.assign(n.variants[0].milestones[0],{status:'已完成',actual:'2026-11-24'});safety.validateChanges('series',[n],[p]);});
+test('preserve legacy completed record without inventing dates',()=>{const n=clone(p);n.variants[0].milestones[0].status='已完成';safety.validateChanges('series',[n],[n]);});
+test('reject invalid status',()=>{const n=clone(p);n.variants[0].milestones[0].status='unknown';assert.throws(()=>safety.validateChanges('series',[n],[p]));});
+test('reject overlong name',()=>{const n=clone(p);n.name='X'.repeat(201);assert.throws(()=>safety.validateChanges('series',[n],[p]));});
+test('PM preserves protected project fields',()=>{const n=clone(p);n.owner='changed';n.milestones[0].r='changed';const result=safety.prepareRecords('series',[n],[p],'pm');assert.equal(result[0].owner,p.owner);assert.deepEqual(result[0].milestones,p.milestones);});
+test('PM cannot add series',()=>assert.throws(()=>safety.prepareRecords('series',[p],[],'pm')));
+test('admin can edit project metadata',()=>{const n=clone(p);n.owner='new';assert.equal(safety.prepareRecords('series',[n],[p],'admin')[0].owner,'new');});
+function between(start,end){const from=app.indexOf(start),to=app.indexOf(end,from);assert(from>=0&&to>from);return app.slice(from,to);}
+const context=vm.createContext({PRIORITIES:['最高','高','中','低'],clone,confirmationTitle:()=>'',calendarDay:()=>null});
+vm.runInContext(between('  function milestoneProgress(','  var seriesState=loadSeries();'),context);
+test('migration preserves manually assigned owner',()=>{context.p=clone(p);context.p.milestones[0].name='内部产品图修改与确认';context.p.milestones[0].r='My PM';context.p.variants=[];vm.runInContext('normalizeWorkflow(p)',context);assert.equal(context.p.milestones[0].r,'My PM');});
+test('removed workflow steps are archived',()=>{context.p=clone(p);context.p.variants=[];context.p.milestones[0].phase='cost';vm.runInContext('normalizeWorkflow(p)',context);assert.equal(context.p.milestones.length,0);assert.equal(context.p.retiredMilestones.length,1);});
+vm.runInContext(between('  function sampleGroupStatus(','  function samplePlanHtml(')+between('  function statusClass(','  function nextDue('),context);
+test('blocked samples stay blocked',()=>assert.equal(vm.runInContext("sampleGroupStatus([{status:'阻塞'}])",context),'阻塞'));
+test('unknown sample status is not completed',()=>assert.equal(vm.runInContext("sampleGroupStatus([{status:'unknown'}])",context),'未开始'));
+test('empty sample family is not completed',()=>assert.equal(vm.runInContext('sampleGroupStatus([])',context),'未开始'));
+test('pending signature uses warning styling',()=>assert.equal(vm.runInContext("statusClass('待签署')",context),'waiting'));
+for(const file of ['app.html','index.html'])for(const script of fs.readFileSync(root+'/'+file,'utf8').matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g))if(!script[1].includes('application/json'))new vm.Script(script[2]);
+for(const file of ['release-safety.js','release-ui.js'])new vm.Script(fs.readFileSync(root+'/'+file,'utf8'));
+process.stdout.write(JSON.stringify({passed,scripts:'parsed'})+'\n');
+
