@@ -82,6 +82,16 @@ Outside click and Escape close the panel; Escape restores trigger focus. The
 same menu remains available in presentation mode. Browser checks verified these
 interactions, both languages, and the 375px panel bounds with no page overflow.
 
+The overview footer now follows the approved static reference: chart icon and
+title at left, four colored status counts in the middle, explanatory copy and
+reset link at right. It describes the currently filtered project cards rather
+than repeating the old five global metrics. Counts partition the cards into
+normal/completed, delayed/blocked, awaiting progress, and not-started/other.
+The waiting label reflects actual workflow states instead of inventing a second
+in-progress status. Global counts remain in the confirmation center. Search
+regression verified four matched cards and four total grouped items; the reset
+link restores the full list. English and 375px layout were also checked.
+
 Verified: four total unfinished rows vs. three pending rows in the isolated seed;
 Armie selection returns two rows; overview no longer renders the confirmation
 table; English default UI has no Chinese residue; 375px and 1280px have no page

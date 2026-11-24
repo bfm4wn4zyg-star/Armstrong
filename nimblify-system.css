@@ -425,3 +425,40 @@ body.dashboard5-theme.d6-style.presentation-mode .dashboard-topbar>:not(.workspa
 body.dashboard5-theme.d6-style.presentation-mode .workspace-account>:not(.topbar-actions){display:none!important}
 body.dashboard5-theme.d6-style.presentation-mode .workspace-account{display:flex;margin:0;gap:0}
 body.dashboard5-theme.d6-style.presentation-mode .topbar-actions[open]>.dashboard-utility{right:0!important}
+
+/* Overview footer matches the approved reference, using the filtered cards.
+   Global counts belong to the confirmation center rather than this footer. */
+body.dashboard5-theme.d6-style .health-snapshot{display:grid;grid-template-columns:1.65fr repeat(4,minmax(0,.9fr)) 1.5fr;align-items:center;gap:0;margin:20px 0 28px;padding:22px 20px;border:1px solid #dce3ef;border-radius:16px;background:linear-gradient(110deg,#fbfcff,#f2f5fc);box-shadow:none;min-width:0}
+body.dashboard5-theme.d6-style .health-snapshot-title{display:flex;align-items:center;gap:12px;padding-right:18px;min-width:0}
+body.dashboard5-theme.d6-style .health-snapshot-title>svg{width:27px;height:32px;flex-shrink:0;color:#4c82ed}
+body.dashboard5-theme.d6-style .health-snapshot-title h2{margin:0;font:600 16px/1.4 var(--brand-body);color:#172039}
+body.dashboard5-theme.d6-style .health-snapshot-title p{margin:5px 0 0;font-size:12px;color:#697386;line-height:1.5}
+body.dashboard5-theme.d6-style .health-snapshot-metric{display:grid;grid-template-columns:24px minmax(0,1fr);align-items:center;gap:3px 9px;border-left:1px solid #dfe5f0;padding:0 16px;min-width:0}
+body.dashboard5-theme.d6-style .health-metric-icon{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;color:#fff;background:#16a34a;font-size:14px;font-weight:600;line-height:1}
+body.dashboard5-theme.d6-style .health-snapshot-metric.risk .health-metric-icon{background:#e6a000}
+body.dashboard5-theme.d6-style .health-snapshot-metric.waiting .health-metric-icon{background:#2563eb}
+body.dashboard5-theme.d6-style .health-snapshot-metric.idle .health-metric-icon{background:#9ca3af}
+body.dashboard5-theme.d6-style .health-snapshot-metric strong{margin:0;font:650 25px/1.2 var(--brand-body);color:#172039;font-variant-numeric:tabular-nums}
+body.dashboard5-theme.d6-style .health-metric-label{grid-column:2;font-size:12px;color:#697386;line-height:1.5;overflow-wrap:anywhere}
+body.dashboard5-theme.d6-style .health-snapshot-end{border-left:1px solid #dfe5f0;padding-left:20px;min-width:0}
+body.dashboard5-theme.d6-style .health-snapshot-end p{margin:0;font-size:13px;color:#556177;line-height:1.5;max-width:170px}
+body.dashboard5-theme.d6-style .health-snapshot-end p>span{display:block}
+body.dashboard5-theme.d6-style .health-snapshot-end button{display:block;margin:7px 0 0;padding:0;border:0;background:transparent;color:#2563eb;font-size:13px;line-height:1.5;text-align:left;cursor:pointer}
+body.dashboard5-theme.d6-style .health-snapshot-end button:hover{text-decoration:underline}
+@media(max-width:1400px){
+ body.dashboard5-theme.d6-style .health-snapshot{grid-template-columns:1.6fr repeat(4,minmax(0,1fr));row-gap:16px}
+ body.dashboard5-theme.d6-style .health-snapshot-metric{padding-inline:12px}
+ body.dashboard5-theme.d6-style .health-snapshot-end{grid-column:1/-1;display:flex;align-items:center;justify-content:flex-end;gap:16px;border-left:0;border-top:1px solid #dfe5f0;padding:12px 0 0}
+ body.dashboard5-theme.d6-style .health-snapshot-end p{max-width:none}
+ body.dashboard5-theme.d6-style .health-snapshot-end button{margin:0}
+}
+@media(max-width:900px){
+ body.dashboard5-theme.d6-style .health-snapshot{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;padding:20px}
+ body.dashboard5-theme.d6-style .health-snapshot-title{grid-column:1/-1;padding:0}
+ body.dashboard5-theme.d6-style .health-snapshot-metric{border:0;padding:0}
+}
+@media(max-width:540px){
+ body.dashboard5-theme.d6-style .health-snapshot{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;padding:20px}
+ body.dashboard5-theme.d6-style .health-snapshot-end{display:block;padding-top:16px}
+ body.dashboard5-theme.d6-style .health-snapshot-end button{margin-top:7px}
+}
