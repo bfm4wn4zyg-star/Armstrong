@@ -2176,7 +2176,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
   function dashboardAction(name,args){
     return 'data-dashboard-action="'+name+'" data-dashboard-args="'+esc(JSON.stringify(args))+'"';
   }
-  var dashboardActions=new Set(['openProject','openVariant','openSample','openNewVariant','useMilestoneAsCurrent','renameProject','editProject','deleteProject','setSampleFamily','renameSampleFamily','filterConfirmations','completeApproval']);
+  var dashboardActions=new Set(['openProject','openVariant','openSample','openNewVariant','useMilestoneAsCurrent','renameProject','editProject','deleteProject','setSampleFamily','renameSampleFamily','filterConfirmations','completeApproval','setPortfolioLine','setPortfolioLayout','setSharedFilter','setMatrixLayout','setView']);
   document.addEventListener('click',function(event){
     var target=event.target.closest('[data-dashboard-action]');
     if(!target||!dashboardActions.has(target.dataset.dashboardAction))return;
