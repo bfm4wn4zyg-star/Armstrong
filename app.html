@@ -1750,6 +1750,7 @@ html[lang^="zh"] .dashboard5-theme :is(.health-matrix-head h2,.panel-head h2,.ga
 </style><style>.team-identity{font-size:13px;color:#465468;align-self:center;padding-inline:4px}body.readonly-dashboard #modeSwitch[hidden]{display:none}</style>
 <link rel="stylesheet" href="dashboard-polish.css?v=20261124-unified-title">
 <link rel="stylesheet" href="portfolio-layout.css?v=20261124-grid1">
+<link rel="stylesheet" href="design-system.css?v=20261124-all-views">
 </head>
 <body class="dashboard5-theme d6-style readonly-dashboard">
 <script type="application/json" id="teamBootstrap"><!--ARMSTRONG_BOOTSTRAP--></script>
@@ -3665,13 +3666,54 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     reportStart=start;reportEnd=end;reportPeriod='custom';renderDashboardResults();
   });
   function reapplyLang(){if(window.applyDashboardLanguage)window.applyDashboardLanguage(document);}
+  var matrixLayout='list';
+  window.setSharedFilter=function(id,value){
+    var select=document.getElementById(id);if(!select)return;
+    select.value=value;select.dispatchEvent(new Event('change'));
+  };
+  window.setMatrixLayout=function(value){matrixLayout=value==='grid'?'grid':'list';renderDashboardResults();};
+  function renderSharedFilters(){
+    var controls=document.getElementById('sharedFilterChips');
+    if(!controls){controls=document.createElement('div');controls.id='sharedFilterChips';controls.className='shared-filter-chips';document.getElementById('workspaceFilters').appendChild(controls);}
+    var english=window.DASHBOARD_LANG==='en';
+    controls.innerHTML=['businessFilter','seriesStatusFilter','priorityFilter','prioritySort'].map(function(id){
+      var select=document.getElementById(id),label=document.querySelector('label[for="'+id+'"]');
+      var selected=select.options[select.selectedIndex];
+      return '<details class="shared-filter'+(select.selectedIndex>0?' active':'')+'"><summary>'+esc(label?label.textContent:'')+'<span>'+esc(selected?selected.textContent:'')+'</span></summary><div class="shared-filter-menu">'+Array.from(select.options).map(function(option){return '<button type="button" aria-pressed="'+option.selected+'" '+dashboardAction('setSharedFilter',[id,option.value])+'>'+esc(option.textContent)+'</button>';}).join('')+'</div></details>';
+    }).join('')+'<button type="button" class="btn ghost" onclick="document.getElementById(\'workspaceReset\').click()">'+(english?'Clear filters':'清除筛选')+'</button>';
+  }
+  function decorateSharedTables(){
+    document.querySelectorAll('.matrix-view-tools').forEach(function(tools){tools.remove();});
+    document.querySelectorAll('#main table,#drawerBody table').forEach(function(table){
+      var labels=Array.from(table.querySelectorAll('thead th')).map(function(th){return th.textContent.trim();});
+      table.querySelectorAll('tbody tr').forEach(function(row){
+        Array.from(row.children).forEach(function(cell,index){
+          if(cell.colSpan>1)return;
+          cell.dataset.label=labels[index]||'';
+          cell.classList.toggle('empty-matrix-cell',table.closest('.matrix')!==null&&index===0&&!cell.textContent.trim());
+        });
+      });
+    });
+    var matrix=document.querySelector('#main .matrix');
+    if(matrix){
+      matrix.classList.toggle('table-as-cards',matrixLayout==='grid');
+      var count=matrix.querySelectorAll('tbody tr:not(.phase-row):not(:has(.gate-empty))').length;
+      var tools=document.createElement('div');tools.className='matrix-view-tools';
+      var english=window.DASHBOARD_LANG==='en';
+      tools.innerHTML='<span>'+count+(english?' entries':' 条记录')+'</span><div class="view-segment"><button type="button" aria-pressed="'+(matrixLayout==='grid')+'" '+dashboardAction('setMatrixLayout',['grid'])+'>'+(english?'Grid':'网格')+'</button><button type="button" aria-pressed="'+(matrixLayout==='list')+'" '+dashboardAction('setMatrixLayout',['list'])+'>'+(english?'List':'列表')+'</button></div>';
+      matrix.before(tools);
+    }
+  }
   window.setView=function(v){
     view=v;dashboardFilter='all';gateApproverFilter='';gateSeriesFilter='';syncOverviewTabs();render();
   };
+  new MutationObserver(function(){decorateSharedTables();}).observe(document.getElementById('drawerBody'),{childList:true,subtree:true});
   window.renderDashboardResults=function(){
     if(view==='overview')renderExecutiveFocus();
     main.innerHTML=view==='samples'?samplePlanHtml():view==='matrix'?matrixHtml():view==='reports'?reportsHtml():overviewHtml();
     reapplyLang();
+    renderSharedFilters();
+    decorateSharedTables();
   };
   window.render=function(){
     renderSidebarProjects();
