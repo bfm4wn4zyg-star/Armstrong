@@ -1750,7 +1750,7 @@ html[lang^="zh"] .dashboard5-theme :is(.health-matrix-head h2,.panel-head h2,.ga
 </style><style>.team-identity{font-size:13px;color:#465468;align-self:center;padding-inline:4px}body.readonly-dashboard #modeSwitch[hidden]{display:none}</style>
 <link rel="stylesheet" href="dashboard-polish.css?v=20261124-unified-title">
 <link rel="stylesheet" href="portfolio-layout.css?v=20261124-grid1">
-<link rel="stylesheet" href="design-system.css?v=20261124-all-views">
+<link rel="stylesheet" href="design-system.css?v=20261124-saas-tokens">
 </head>
 <body class="dashboard5-theme d6-style readonly-dashboard">
 <script type="application/json" id="teamBootstrap"><!--ARMSTRONG_BOOTSTRAP--></script>
@@ -2940,7 +2940,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
       var progress=Math.max(0,Math.min(100,Number(item.progress)||0));
       var action=dashboardAction(item.kind==='sample'?'setSampleFamily':'openProject',[item.id]);
       var impact=item.affected+' / '+item.total+(english?' models affected':' 个型号受影响');
-      return '<button type="button" class="portfolio-project '+tone+'" '+action+' title="'+esc(item.name)+'"><span class="portfolio-card-top"><span class="portfolio-icon '+esc(item.line.id)+'">'+icon+'</span><span class="portfolio-status">'+esc(item.status)+'</span></span><span class="portfolio-project-name">'+esc(item.name)+'</span><span class="portfolio-percent">'+progress+'%</span><span class="portfolio-track" role="meter" aria-label="'+esc(item.name)+'" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'"><i style="width:'+progress+'%"></i></span><span class="portfolio-project-meta"><span class="portfolio-owner" title="'+esc(item.owner||'—')+'">'+(english?'Owner: ':'负责人：')+esc(item.owner||'—')+'</span><span>'+esc(impact)+'</span><span class="portfolio-category">'+esc(english?item.line.en:item.line.name)+'</span></span></button>';
+      return '<button type="button" class="portfolio-project '+tone+'" '+action+' title="'+esc(item.name)+'"><span class="portfolio-card-top"><span class="portfolio-icon '+esc(item.line.id)+'">'+icon+'</span><span class="portfolio-status '+statusClass(item.status)+'">'+esc(item.status)+'</span></span><span class="portfolio-project-name">'+esc(item.name)+'</span><span class="portfolio-percent">'+progress+'%</span><span class="portfolio-track" role="meter" aria-label="'+esc(item.name)+'" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'"><i style="width:'+progress+'%"></i></span><span class="portfolio-project-meta"><span class="portfolio-owner" title="'+esc(item.owner||'—')+'">'+(english?'Owner: ':'负责人：')+esc(item.owner||'—')+'</span><span>'+esc(impact)+'</span><span class="portfolio-category">'+esc(english?item.line.en:item.line.name)+'</span></span></button>';
     }).join('');
     var delayed=items.filter(function(x){return x.status==='已延误';}).length;
     var blocked=items.filter(function(x){return x.status==='阻塞';}).length;
@@ -3720,7 +3720,7 @@ function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:'appli
     var overview=view==='overview'||view==='matrix';
     document.getElementById('priorityControls').hidden=!overview;
     document.getElementById('workspaceFilters').hidden=view==='reports';
-    document.getElementById('stats').hidden=view!=='matrix';
+    document.getElementById('stats').hidden=!overview;
     var focusEl=document.getElementById('executiveFocus');
     if(focusEl)focusEl.hidden=view!=='overview';
     document.getElementById('confirmationLoadSummary').hidden=view!=='overview';
