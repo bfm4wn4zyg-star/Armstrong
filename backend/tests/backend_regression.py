@@ -1,5 +1,6 @@
 """HTTP regression against a temporary DB and an ephemeral local port only."""
 import copy
+import ast
 import importlib.util
 import json
 import secrets
@@ -64,6 +65,11 @@ with tempfile.TemporaryDirectory() as directory:
             status, sessions[role] = request("/api/login", {"username":role, "password":"test-only-password"})
             expect(role + " login", status, 200)
         expect("unauthenticated bootstrap", request("/api/bootstrap")[0], 401)
+        upgrade_source = (source.parent / "upgrade-existing.py").read_text(encoding="utf-8")
+        health_function = next(node for node in ast.parse(upgrade_source).body if isinstance(node, ast.FunctionDef) and node.name == "health")
+        health_globals = {"urllib": urllib, "port": server.server_port, "api_origin": server.app_origin}
+        exec(compile(ast.Module(body=[health_function], type_ignores=[]), "health_probe", "exec"), health_globals)
+        expect("upgrade health probe includes allowed Origin", health_globals["health"](), True)
         expect("viewer cannot write", request("/api/series", {"revision":0,"records":[project]}, sessions["viewer"])[0], 403)
         changed = copy.deepcopy(project)
         changed["owner"] = "Forbidden edit"

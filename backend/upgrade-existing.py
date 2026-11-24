@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 
 # Filled from verified local source by prepare_remote.py.
 SERVER_SHA = 'c3053f4bb1079d6abc98d2f1b928d1939afe4a2369a3a44f30a1b7fcb030a068'
-TEST_SHA = '92d4206aa65ae34f51bd1bc43484a403e1880784c3776899ee82ff9182b5b8b1'
+TEST_SHA = '972182a85fa37201c67e4e3cbe4959d11311389c9f6698b12e3cdc6216448839'
 parser = argparse.ArgumentParser()
 parser.add_argument('--pid', type=int, required=True)
 parser.add_argument('--ref', required=True)
@@ -52,6 +52,7 @@ cwd = os.readlink(proc / 'cwd')
 database = Path(env.get('ARMSTRONG_DB', str(server_file.parent / 'team.sqlite3'))).resolve()
 assert database.is_file(), 'Database path not found; update stopped'
 port = int(args[args.index('--port') + 1])
+api_origin = args[args.index('--app-origin') + 1]
 
 staging = Path(tempfile.mkdtemp(prefix='armstrong-prerelease-20261124-'))
 candidate = staging / 'server.py'
@@ -59,9 +60,12 @@ candidate.write_bytes(download('server.py', SERVER_SHA))
 test = staging / 'backend_regression.py'
 test_source = download('tests/backend_regression.py', TEST_SHA).decode()
 test.write_text(test_source.replace("source = Path(__file__).resolve().parent.parent / 'server.py'", 'source = Path(' + repr(str(candidate)) + ')'), encoding='utf-8')
+helper_source = Path(__file__).read_bytes() if '__file__' in globals() else globals().get('s')
+assert isinstance(helper_source, bytes), 'Verified upgrade source is unavailable'
+(staging / 'upgrade-existing.py').write_bytes(helper_source)
 py_compile.compile(str(candidate), doraise=True)
 subprocess.run([args[0], str(test)], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=40)
-print('REMOTE_TESTS_PASS:16', flush=True)
+print('REMOTE_TESTS_PASS:17', flush=True)
 
 stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
 backup = base / 'backups' / ('prerelease-' + stamp)
@@ -77,7 +81,9 @@ print('BACKUP_OK', backup, flush=True)
 
 def health():
     try:
-        urllib.request.urlopen('http://127.0.0.1:%d/api/bootstrap' % port, timeout=2)
+        request = urllib.request.Request('http://127.0.0.1:%d/api/bootstrap' % port,
+                                         headers={'Origin': api_origin})
+        urllib.request.urlopen(request, timeout=2)
     except urllib.error.HTTPError as error:
         return error.code == 401
     except (OSError, urllib.error.URLError):
